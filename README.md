@@ -1,4 +1,4 @@
-CS493_Test
+CS493 Project 
 ==========
 
-test repository 
+repository 
