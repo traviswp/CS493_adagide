@@ -1,0 +1,19 @@
+Getting the project from github:
+
+1. clone the repository to a new local folder (directory)
+
+Opening the project in Eclipse:
+
+2. In Eclipse, select File -> Import...
+3. Under General, select "Existing Projects into Workspace"
+4. When asked to select a root directory, navigate to the 
+   directory that was created above (step 1).
+   
+From GIT GUI:
+
+	When you start working you have to "get" updated project code from github:
+	5. Remote -> Fetch from -> origin
+	6. Merge -> Local merge -> Select the "Tracking Branch" radio button. 
+	7. Finally, click "Merge"
+	
+	Now you should have the latest & greatest project code!
