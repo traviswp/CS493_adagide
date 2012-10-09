@@ -10,4 +10,6 @@ public class ClassStub {
 	// now I am JUST going to merge local & select the tracking branch...
 	
 	// Okay you DEFINITELLY have to FETCH first and then MERGE.
+
+	// new
 }
