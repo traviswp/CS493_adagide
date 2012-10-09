@@ -1,0 +1,36 @@
+REEDYC++
+Really Easy Environment to Develop Your C++
+
+CSIDE++
+DEC++
+C++GIDE
+CSGIDE
+
+Supported Features List:
+    -Ability to generate project directories
+    -Cut, Copy, Paste, Find, Replace
+    -line numbers
+    -Adding/deleting files
+    -Exporting project (zip files)
+    -Editor and Output Panes(both compilation and run input/output)
+    -Text highlighting
+    -Undo
+    -Compile and build button/buttons
+    -run button
+    -Stop button
+    -Horizontal and vertical layouts
+    -Multiple tabs
+    -Different output in different colors
+    -status bar
+    -refactoring?
+    -reformat?
+    -.bak file generation/renaming?
+Links:
+http://qt-jambi.org/
+http://jintilla.sourceforge.net/
+http://gcc.gnu.org/
+http://clang.llvm.org/
+
+
+http://www.scintilla.org/
+http://www.riverbankcomputing.co.uk/static/Docs/PyQt4/html/classes.html
