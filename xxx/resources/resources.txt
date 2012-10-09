@@ -1,0 +1,6 @@
+The purpose of this folder is to hold basically any non-java files:
+
++ HTML files
++ XML files
++ Text files
++ and any files used for testing (that aren't java src code)
