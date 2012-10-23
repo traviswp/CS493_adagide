@@ -300,8 +300,5 @@
    <header>Qsci/qsciscintilla.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="Adagide/Adagide/140gide/cs140adagide/resources/cs140adagide.qrc"/>
- </resources>
  <connections/>
 </ui>
