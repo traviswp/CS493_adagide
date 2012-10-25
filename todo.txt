@@ -1,5 +1,4 @@
 
-
 ----------
  Michael
 ----------
@@ -17,6 +16,5 @@
 ----------
  Travis
 ----------
-+
-+
-+
++ Investigate how the controller can talk with the compiler manager to compile files. 
++ Possibly start to construct some of the controller to handle the above task. 
