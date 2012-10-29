@@ -1,10 +1,11 @@
-
 ----------
  Michael
 ----------
-+
-+
-+
++Add themes to file
+-Today /10/29/12 QT designer would freeze during file exploration so I have been editing in notepad++
++investigate tab
++investigate simple file managing
+
 
 ----------
  Kip
