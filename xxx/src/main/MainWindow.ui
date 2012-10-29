@@ -167,25 +167,25 @@
     <addaction name="actionSave_As"/>
     <addaction name="actionSave_All"/>
     <addaction name="separator"/>
-    <addaction name="actionClose"/>
-    <addaction name="actionClose_2"/>
+    <addaction name="actionClose_Project"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>Edit</string>
     </property>
     <addaction name="actionUndo"/>
-    <addaction name="actionREdo"/>
+    <addaction name="actionRedo"/>
     <addaction name="separator"/>
     <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
-    <addaction name="actionPaste_2"/>
     <addaction name="actionSelect_All"/>
     <addaction name="separator"/>
-    <addaction name="actionFind"/>
-    <addaction name="actionREplace"/>
+    <addaction name="actionFind_Replace"/>
+    <addaction name="actionGoto"/>
     <addaction name="separator"/>
-    <addaction name="actionReformate"/>
+    <addaction name="actionReformat"/>
    </widget>
    <widget class="QMenu" name="menuAction">
     <property name="title">
@@ -207,16 +207,28 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNewProject">
+   <property name="icon">
+    <iconset theme="new-project" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/new-project</normaloff>:/icons/theme/new-project</iconset>
+   </property>
    <property name="text">
     <string>New Project</string>
    </property>
   </action>
   <action name="actionOpen_Project">
+   <property name="icon">
+    <iconset theme="open-project" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/open-project</normaloff>:/icons/theme/open-project</iconset>
+   </property>
    <property name="text">
     <string>Open Project</string>
    </property>
   </action>
   <action name="actionNew_File">
+   <property name="icon">
+    <iconset resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/new-project</normaloff>:/icons/theme/new-project</iconset>
+   </property>
    <property name="text">
     <string>New File</string>
    </property>
@@ -227,6 +239,10 @@
    </property>
   </action>
   <action name="actionDelete_File">
+   <property name="icon">
+    <iconset theme="delete" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/delete</normaloff>:/icons/theme/delete</iconset>
+   </property>
    <property name="text">
     <string>Delete File</string>
    </property>
@@ -241,62 +257,102 @@
     <string>Save All</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="actionClose_Project">
+   <property name="icon">
+    <iconset theme="close" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/close</normaloff>:/icons/theme/close</iconset>
+   </property>
    <property name="text">
     <string>Close Project</string>
    </property>
   </action>
-  <action name="actionClose_2">
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset theme="quit" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/quit</normaloff>:/icons/theme/quit</iconset>
+   </property>
    <property name="text">
     <string>Quit</string>
    </property>
   </action>
   <action name="actionUndo">
+   <property name="icon">
+    <iconset theme="undo" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/undo</normaloff>:/icons/theme/undo</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
   </action>
-  <action name="actionREdo">
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset theme="redo" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/redo</normaloff>:/icons/theme/redo</iconset>
+   </property>
    <property name="text">
     <string>Redo</string>
    </property>
   </action>
   <action name="actionCut">
+   <property name="icon">
+    <iconset theme="cut" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/cut</normaloff>:/icons/theme/cut</iconset>
+   </property>
    <property name="text">
     <string>Cut</string>
    </property>
   </action>
-  <action name="actionPaste">
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset theme="copy" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/copy</normaloff>:/icons/theme/copy</iconset>
+   </property>
    <property name="text">
     <string>Copy</string>
    </property>
   </action>
-  <action name="actionPaste_2">
+  <action name="actionPaste">
    <property name="text">
     <string>Paste</string>
    </property>
   </action>
   <action name="actionSelect_All">
+   <property name="icon">
+    <iconset theme="select-all" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/select-all</normaloff>:/icons/theme/select-all</iconset>
+   </property>
    <property name="text">
     <string>Select All</string>
    </property>
   </action>
-  <action name="actionFind">
+  <action name="actionFind_Replace">
+   <property name="icon">
+    <iconset theme="find-replace" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/find-replace</normaloff>:/icons/theme/find-replace</iconset>
+   </property>
    <property name="text">
     <string>Find/Replace</string>
    </property>
   </action>
-  <action name="actionREplace">
+  <action name="actionGoto">
+   <property name="icon">
+    <iconset theme="qoto">
+     <normaloff>:/icons/theme/qoto</normaloff>:/icons/theme/qoto</iconset>
+   </property>
    <property name="text">
     <string>Goto Line</string>
    </property>
   </action>
-  <action name="actionReformate">
+  <action name="actionReformat">
    <property name="text">
     <string>Reformat</string>
    </property>
   </action>
   <action name="actionBuild">
+   <property name="icon">
+    <iconset theme="build" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/build</normaloff>:/icons/theme/build</iconset>
+   </property>
    <property name="text">
     <string>Build</string>
    </property>
@@ -307,6 +363,10 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset theme="about" resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/about</normaloff>:/icons/theme/about</iconset>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
@@ -324,6 +384,8 @@
    <header>Qsci/qsciscintilla.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../resources/cs140adagide.qrc"/>
+ </resources>
  <connections/>
 </ui>
