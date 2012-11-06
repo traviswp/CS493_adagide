@@ -1,11 +1,12 @@
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+from PyQt4 import Qsci
 
 from MainWindow import Ui_MainWindow
 from FileManager import FileManager
 from ExecutionManager import ExecutionManager
 from BuildManager import BuildManager
-
+from EditorPane import *
 """
 The Controller is the glue that holds the project together.
 	-It is a bridge that connects the User Interface to the backend code.
@@ -59,4 +60,10 @@ class Controller(QtCore.QObject):
 
 	# Put all UI element event handlers here
 	def on_actionSave():
+		return
+	def on_actionOpen_File(self,checked):
+		fname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='/.')
+		newEditorPane=FileEditor()
+		TabMother=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		TabMother.addTab(newEditorPane, QtCore.QString(fname))
 		return
