@@ -42,7 +42,7 @@ class BuildManager(QtGui.QPlainTextEdit):
         self.document().setDefaultFont(QtGui.QFont(textFont, textSize, QtGui.QFont.Normal))
 
         # set compiler
-        self.compiler = CompilerLib.ClangCimpiler()
+        self.compiler = ClangCompiler()
 
         # initial text environment contents
         self.contents = ""
@@ -99,7 +99,7 @@ class BuildManager(QtGui.QPlainTextEdit):
     ##################################################################
 
     def write(self, data):
-        self.contents += str(data
+        self.contents += str(data)
         self.redraw()
 
     def clear(self):

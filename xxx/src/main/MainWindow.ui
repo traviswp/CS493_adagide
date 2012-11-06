@@ -31,7 +31,7 @@
       </property>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -144,7 +144,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit">
+         <widget class="QLineEdit" name="runArgs">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -177,7 +177,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QTextEdit" name="textEdit_3"/>
+      <widget class="QTextEdit" name="outputTextBox"/>
      </widget>
     </item>
    </layout>
@@ -188,7 +188,7 @@
      <x>0</x>
      <y>0</y>
      <width>977</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProject">
@@ -441,6 +441,7 @@
    <class>QsciScintilla</class>
    <extends>QFrame</extends>
    <header>Qsci/qsciscintilla.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
