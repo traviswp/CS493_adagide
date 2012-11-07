@@ -56,7 +56,7 @@ class FileEditor(Qsci.QsciScintilla):
         # not too small
         self.setMinimumSize(200, 200)
 
-'''
+
 class ProjectFile(FileEditor):
     modificationStateChanged = QtCore.pyqtSignal(QtCore.QObject)
     
@@ -107,7 +107,7 @@ class ProjectFile(FileEditor):
 
     def on_modification_changed(self, value):
         self.modificationStateChanged.emit(self)
-
+'''
 class ProjectModel(QtCore.QObject):
     
     #signals emitted by this model
