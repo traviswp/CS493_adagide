@@ -60,10 +60,18 @@ class Controller(QtCore.QObject):
 
 	# Put all UI element event handlers here
 	def on_actionSave():
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget') 
+
 		return
+
 	def on_actionOpen_File(self,checked):
-		fname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='/.')
+		fname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='./')
+		fhandle = QtCore.QFile(fname)
+		fhandle.open(QtCore.QIODevice.ReadWrite)
+		
 		newEditorPane=FileEditor()
-		TabMother=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		TabMother.addTab(newEditorPane, QtCore.QString(fname))
+		newEditorPane.read(fhandle)
+
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.addTab(newEditorPane, QtCore.QString(fname))
 		return
