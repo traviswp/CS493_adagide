@@ -22,7 +22,6 @@ class ClangCompiler():
 
 		# default arguments
 		executableName = os.path.dirname(str(files[0])) + "/" + executableName
-		print executableName
 		
 		args = ["-g", "-Wall", "-o", executableName]
 
@@ -107,4 +106,3 @@ class ClangCompiler():
 			errors.append(temp)
 
 		return errors
-
