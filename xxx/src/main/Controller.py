@@ -77,14 +77,15 @@ class Controller(QtCore.QObject):
 
 	def on_actionOpen_File(self,checked):
 		fullname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='./')
-		fpath=os.path.dirname(str(fullname))
-		fname=str(fullname)+""
-		fname=fname.replace(fpath+'/'," ")
-		newEditorPane=ProjectFile(fname,fullname)
+		if fullname != "":
+                        fpath=os.path.dirname(str(fullname))
+                        fname=str(fullname)+""
+                        fname=fname.replace(fpath+'/'," ")
+                        newEditorPane=ProjectFile(fname,fullname)
 
-		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+                        tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		
-		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
+                        tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
 		return
 
 	def on_actionBuild(self,checked):
