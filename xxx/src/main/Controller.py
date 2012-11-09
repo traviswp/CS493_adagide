@@ -52,6 +52,7 @@ class Controller(QtCore.QObject):
 
 	# Put all basic class functions here
 	def build():
+                
 		return
 	def run():
 		return
@@ -60,18 +61,53 @@ class Controller(QtCore.QObject):
 
 	# Put all UI element event handlers here
 	def on_actionSave(self,checked):
-                tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-                current_tab = tabWidget.currentWidget() 
-                current_tab.save()
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 
+		current_tab.save()
 		return
 
-        def on_actionOpen_File(self,checked):
-                fpath=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='./')
-                newEditorPane=ProjectFile(fpath,fpath)
+	def on_actionOpen_File(self,checked):
+		fpath=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='./')
+		newEditorPane=ProjectFile(fpath,fpath)
 
-                tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-                tabWidget.addTab(newEditorPane, QtCore.QString(fpath))
-                return
-        
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.addTab(newEditorPane, QtCore.QString(fpath))
+		return
 
+	def on_actionBuild(self,checked):
+		build();
+		return
+	
+	def on_button_build(self,checked):
+		build();
+		return
+	
+	def on_actionNew_Project(self,checked):
+		return
+	def on_actionOpen_Project(self,checked):
+		return
+	def on_actionNew_File(self,checked):
+		return
+	def on_actionSave_All(self,checked):
+		return
+	def on_actionClose_Project(self,checked):
+		return
+	def on_actionQuit(self,checked):
+		return
+	def on_actionUndo(self,checked):
+		return
+	def on_actionRedo(self,checked):
+		return
+	def on_actionCut(self,checked):
+		return
+	def on_actionCopy(self,checked):
+		return
+	def on_actionPaste(self,checked):
+		return
+	def on_actionSelect_All(self,checked):
+		return
+	def on_actionFind_Replace(self,checked):
+		return
+	def on_action(self,checked):
+		return
 
