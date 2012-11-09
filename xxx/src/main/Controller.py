@@ -30,6 +30,10 @@ class Controller(QtCore.QObject):
 		self.executionManager = ExecutionManager(self)
 		self.buildManager = BuildManager(self)
 		
+		# HACK: get the current tab which contains the file to delete
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.removeTab(1)
+
 		# Link UI elements to functions
 		for item in self.mainWindow.findChildren(QtGui.QAction): # Menubar action elements
 			try:
@@ -121,6 +125,10 @@ class Controller(QtCore.QObject):
 			tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 
 			tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
+
+		# HACK: get the current tab which contains the file to delete
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.removeTab(0)
 
 		return
 
