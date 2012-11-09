@@ -54,6 +54,11 @@ class Controller(QtCore.QObject):
 	# Put all basic class functions here
 	def build(self):
 
+		# before displaying the new build, clear the output text box
+		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
+		outputConsole.clear()
+
+		# get the current tab which contains the file to be built
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		currFile = tabWidget.currentWidget()
 
@@ -69,7 +74,7 @@ class Controller(QtCore.QObject):
 			# This should never happen if you are trying to build a valid file...
 			# If we get here it means that people are trying to compile non-.cpp
 			# files...
-			executableName = "SIDE.out"
+			executableName = "SIDE.err"
 
 
 		# TODO get the compilation arguments 
@@ -81,10 +86,11 @@ class Controller(QtCore.QObject):
 		return
 
 	def run(self):
-                tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		currFile = tabWidget.currentWidget()
 		self.executionManager.run("cout","")
 		return
+
 	def stop(self):
 		return
 
@@ -165,5 +171,4 @@ class Controller(QtCore.QObject):
 
 	def on_action(self,checked):
 		return
-
 
