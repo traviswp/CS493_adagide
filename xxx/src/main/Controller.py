@@ -7,6 +7,7 @@ from FileManager import FileManager
 from ExecutionManager import ExecutionManager
 from BuildManager import BuildManager
 from EditorPane import *
+import copy
 """
 The Controller is the glue that holds the project together.
 	-It is a bridge that connects the User Interface to the backend code.
@@ -77,11 +78,12 @@ class Controller(QtCore.QObject):
 	def on_actionOpen_File(self,checked):
 		fullname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='./')
 		fpath=os.path.dirname(str(fullname))
-		fname=fullname
-		fname.replace(fpath+'/',"")
+		fname=str(fullname)+""
+		fname=fname.replace(fpath+'/'," ")
 		newEditorPane=ProjectFile(fname,fullname)
 
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		
 		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
 		return
 
