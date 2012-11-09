@@ -53,15 +53,31 @@ class Controller(QtCore.QObject):
 
 	# Put all basic class functions here
 	def build(self):
+
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		currFile = tabWidget.currentWidget()
 
+		# get the file(s) to be built
 		files = currFile.file_path
-		executableName = "cout"
-		compileArgs = ""
-		
 
+		# set the name of the executable
+		filename = currFile.filename
+		length = len(filename)
+		if (filename[length-4:length] == ".cpp"):
+			executableName = filename[0:length-4]
+		else:
+			# This should never happen if you are trying to build a valid file...
+			# If we get here it means that people are trying to compile non-.cpp
+			# files...
+			executableName = "SIDE.out"
+
+
+		# TODO get the compilation arguments 
+		compileArgs = ""
+
+		# build with parameters defined above
 		self.buildManager.build((files,), executableName, compileArgs)
+
 		return
 
 	def run(self):
@@ -84,14 +100,15 @@ class Controller(QtCore.QObject):
 	def on_actionOpen_File(self,checked):
 		fullname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='./')
 		if fullname != "":
-                        fpath=os.path.dirname(str(fullname))
-                        fname=str(fullname)+""
-                        fname=fname.replace(fpath+'/'," ")
-                        newEditorPane=ProjectFile(fname,fullname)
+			fpath=os.path.dirname(str(fullname))
+			fname=str(fullname)+""
+			fname=fname.replace(fpath+'/',"")
+			newEditorPane=ProjectFile(fname,fullname)
 
-                        tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		
-                        tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
+			tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+
+			tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
+
 		return
 
 	def on_actionBuild(self,checked):

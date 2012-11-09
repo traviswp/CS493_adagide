@@ -96,8 +96,8 @@ class BuildManager():
     # In the case of stdError, return the appropriate messages
     #
     def on_stderr(self):
-        data = self.process.readAllStandardError()
-        self.write(data)
+		data = self.process.readAllStandardError()
+		self.write(data)
         #self.controller.displayOutput(self.buffer)
 
     #

@@ -58,6 +58,7 @@ class FileEditor(Qsci.QsciScintilla):
 
 
 class ProjectFile(FileEditor):
+
     modificationStateChanged = QtCore.pyqtSignal(QtCore.QObject)
     
     def __init__(self, filename, file_path, parent_model=None):
