@@ -26,7 +26,7 @@ class Controller(QtCore.QObject):
 
 		# Create/initialize other objects
 		self.fileManager = FileManager()
-		self.executionManager = ExecutionManager()
+		self.executionManager = ExecutionManager(self)
 		self.buildManager = BuildManager(self)
 		
 		# Link UI elements to functions
@@ -79,7 +79,7 @@ class Controller(QtCore.QObject):
 		fpath=os.path.dirname(str(fullname))
 		fname=fullname
 		fname.replace(fpath+'/',"")
-		newEditorPane=ProjectFile(fname,fpath)
+		newEditorPane=ProjectFile(fname,fullname)
 
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
