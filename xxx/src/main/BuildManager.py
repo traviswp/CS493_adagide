@@ -11,7 +11,8 @@ from CompilerLib import ClangCompiler
     #                          Build Manager                         #
     ##################################################################
 
-class BuildManager(QtGui.QPlainTextEdit):
+#class BuildManager(QtGui.QPlainTextEdit):
+class BuildManager():
 
     """
     ----------------------------------------------------------------------
@@ -27,25 +28,31 @@ class BuildManager(QtGui.QPlainTextEdit):
     compile_fail   = QtCore.pyqtSignal(list)
 
     # initialization
-    def __init__(self, parent=None):
+    def __init__(self, controller):
+
+        # build (compilation) output buffer
+        self.buffer
+
+        # controller
+        self.controller = controller
 
         # initialize text environment
-        QtGui.QPlainTextEdit.__init__(self, parent)
+        #QtGui.QPlainTextEdit.__init__(self, parent)
         
         # set environment defaults initially
-        self.setUndoRedoEnabled(False)
-        self.setReadOnly(True)
+        #self.setUndoRedoEnabled(False)
+        #self.setReadOnly(True)
 
         # defaults for text environment
-        textFont = "monospace"
-        textSize = 9
-        self.document().setDefaultFont(QtGui.QFont(textFont, textSize, QtGui.QFont.Normal))
+        #textFont = "monospace"
+        #textSize = 9
+        #self.document().setDefaultFont(QtGui.QFont(textFont, textSize, QtGui.QFont.Normal))
 
         # set compiler
         self.compiler = ClangCompiler()
 
         # initial text environment contents
-        self.contents = ""
+        #self.contents = ""
         self.process = QtCore.QProcess(self)
 
         # custom handles for process signals
@@ -63,21 +70,25 @@ class BuildManager(QtGui.QPlainTextEdit):
     # When the process starts, ...
     #
     def on_started(self):
-        pass
+        self.write("[ Compilation Started ]")
 
     #
     # When the process finishes compilation, return the appropriate messages.
     #
     def on_finished(self):
         # parse the results of the compilation
-        results = self.compiler.parse_output(self.contents)
+        results = self.compiler.parse_output(self.buffer)
 
         # determine if compilation was successful & return appropriate messages. 
         if self.process.exitCode() == 0:
             self.compile_success.emit(results)
-            self.write("[ Compilation Successful ]")  
+            #self.write("[ Compilation Successful ]")
+            self.write("[ Compilation Successful ]")
         else:
             self.compile_fail.emit(results)
+
+        # call controller method "compilationOutput" to display buffer contents
+        self.controller.compilationOutput(self.buffer)
 
     #
     # In the case of stdError, return the appropriate messages
@@ -99,21 +110,24 @@ class BuildManager(QtGui.QPlainTextEdit):
     ##################################################################
 
     def write(self, data):
-        self.contents += str(data)
-        self.redraw()
+        self.buffer += str(data)
+        #self.contents += str(data)
+        #self.redraw()
+        #return data
 
     def clear(self):
-        self.contents = ""
-        self.redraw()
+        #self.contents = ""
+        #self.redraw()
+        self.buffer = ""
 
-    def redraw(self):
-        self.SetReadOnly(False)
-        self.setPlainText(self.contents)
-        self.setReadOnly(True)
+    #def redraw(self):
+    #    self.SetReadOnly(False)
+    #    self.setPlainText(self.contents)
+    #    self.setReadOnly(True)
 
     def build(self, files, executableName, runtimeArgs):
         # TODO: kill old processes...(Question: How do we know which ones are ours to kill?)
-        self.clear()
+        #self.clear()
 
         # pass all files, args, & the executable to the compiler's run method
         # (NOTE: compiler set in CompilationManager initialization)
