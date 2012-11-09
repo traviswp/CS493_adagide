@@ -65,6 +65,9 @@ class Controller(QtCore.QObject):
 		return
 
 	def run(self):
+                tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		currFile = tabWidget.currentWidget()
+		self.executionManager.run("cout","")
 		return
 	def stop(self):
 		return
@@ -102,10 +105,12 @@ class Controller(QtCore.QObject):
 		self.build();
 		return
 	
-	def on_actionNew_Project(self,checked):
+	def on_actionRun(self,checked):
+                self.run();
 		return
 
-	def on_actionOpen_Project(self,checked):
+	def on_button_run(self,checked):
+                self.run();
 		return
 
 	def on_actionNew_File(self,checked):
