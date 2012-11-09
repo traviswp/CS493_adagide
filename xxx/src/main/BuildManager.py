@@ -70,7 +70,7 @@ class BuildManager():
     # When the process starts, ...
     #
     def on_started(self):
-        self.write("[ Compilation Started ]")
+        self.write("[ Compilation Started ]\n")
 
     #
     # When the process finishes compilation, return the appropriate messages.
@@ -98,7 +98,7 @@ class BuildManager():
     def on_stderr(self):
         data = self.process.readAllStandardError()
         self.write(data)
-        self.controller.displayOutput(self.buffer)
+        #self.controller.displayOutput(self.buffer)
 
     #
     # In the case of an error, return the appropriate messages
@@ -106,7 +106,7 @@ class BuildManager():
     def on_error(self):
         data = "[ The compiler exited with an error: %s ]" % str(self.process.error())
         self.write(data)
-        self.controller.displayOutput(self.buffer)
+        #self.controller.displayOutput(self.buffer)
 
 
     ##################################################################
@@ -129,11 +129,11 @@ class BuildManager():
     #    self.setPlainText(self.contents)
     #    self.setReadOnly(True)
 
-    def build(self, files, executableName, runtimeArgs):
+    def build(self, files, executableName, compileArgs):
         # TODO: kill old processes...(Question: How do we know which ones are ours to kill?)
         self.clear()
 
         # pass all files, args, & the executable to the compiler's run method
         # (NOTE: compiler set in CompilationManager initialization)
-        self.compiler.build(self.process, files, executableName, runtimeArgs)
+        self.compiler.build(self.process, files, executableName, compileArgs)
 

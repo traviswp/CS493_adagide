@@ -55,7 +55,13 @@ class Controller(QtCore.QObject):
 	def build(self):
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		currFile = tabWidget.currentWidget()
-		self.buildManager.build(currFile.file_path, currFile.filename, "-Wall")
+
+		files = currFile.file_path
+		executableName = "cout"
+		compileArgs = ""
+		
+
+		self.buildManager.build((files,), executableName, compileArgs)
 		return
 
 	def run(self):
@@ -89,7 +95,7 @@ class Controller(QtCore.QObject):
 		return
 
 	def on_actionBuild(self,checked):
-		build();
+		self.build();
 		return
 	
 	def on_button_build(self,checked):
