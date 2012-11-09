@@ -107,10 +107,6 @@ class ExecutionManager():
 		args = shlex.split(arg_string)
 		self.process.setWorkingDirectory(filedir)
 		self.process.start(QtCore.QString(filename), QtCore.QStringList(args))
-		if self.process.waitForStarted(10000):
-			print "execution sucessfully started"
-		else:
-			print "execution did not start! Error! Error!"
 
 		# TODO kill old processes
 
