@@ -11,7 +11,8 @@ from CompilerLib import ClangCompiler
 #                           Run Manager                          #
 ##################################################################
 
-class ExecutionManager(QtGui.QPlainTextEdit):
+#class ExecutionManager(QtGui.QPlainTextEdit):
+class ExecutionManager():
 
 	"""
 	----------------------------------------------------------------------
@@ -51,7 +52,6 @@ class ExecutionManager(QtGui.QPlainTextEdit):
 		self.write("[ Program Terminated ]")
 
 		# call controller method "compilationOutput" to display buffer contents
-		self.controller.displayOutput(self.buffer)
 
 	def on_stdout(self):
 		data = self.process.readAll()
@@ -69,6 +69,8 @@ class ExecutionManager(QtGui.QPlainTextEdit):
 
 	def write(self, data):
 		self.buffer += str(data)
+		self.controller.displayOutput(self.buffer)
+		self.clear()
 
 
 	'''
@@ -100,10 +102,15 @@ class ExecutionManager(QtGui.QPlainTextEdit):
 	# Execution
 	#
 
-	def run(self, filename, arg_string):
+	def run(self, filedir, filename, arg_string):
 		self.clear()
 		args = shlex.split(arg_string)
+		self.process.setWorkingDirectory(filedir)
 		self.process.start(QtCore.QString(filename), QtCore.QStringList(args))
+		if self.process.waitForStarted(10000):
+			print "execution sucessfully started"
+		else:
+			print "execution did not start! Error! Error!"
 
 		# TODO kill old processes
 

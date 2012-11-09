@@ -83,7 +83,11 @@ class Controller(QtCore.QObject):
 	def run(self):
                 tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		currFile = tabWidget.currentWidget()
-		self.executionManager.run("cout","")
+		filedir = os.path.dirname(str(currFile.file_path))
+		executableName = str(currFile.file_path) + ""
+		executableName = executableName.replace(filedir + '/', "")
+		executableName = executableName.split('.')[0]
+		self.executionManager.run(filedir, "./" + executableName, "")
 		return
 	def stop(self):
 		return
