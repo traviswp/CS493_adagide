@@ -27,7 +27,7 @@ class Controller(QtCore.QObject):
 		# Create/initialize other objects
 		self.fileManager = FileManager()
 		self.executionManager = ExecutionManager()
-		self.buildManager = BuildManager()
+		self.buildManager = BuildManager(self)
 		
 		# Link UI elements to functions
 		for item in self.mainWindow.findChildren(QtGui.QAction): # Menubar action elements
@@ -51,21 +51,20 @@ class Controller(QtCore.QObject):
 					print "Controller should have a member function called '%s', but doesn't!" %("on_"+itemName)
 
 	# Put all basic class functions here
-	def build():
-        executable = os.path.join(self.project_model.project_directory, "a.out")
-        files = self.project_model.filenames()
-        self.view_window.build_output.compile_project(files, executable)
-        print "Controller: Build triggered. Files " + str(files)
-		#tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-        #self.buildManager.build()
-                
-		return
-	def run():
-		return
-	def stop():
+	def build(self):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		currFile = tabWidget.currentWidget()
+		self.buildManager.build(currFile.file_path, currFile.filename, "-Wall")
 		return
 
-    def compilationOutput(outBuffer)
+	def run(self):
+		return
+	def stop(self):
+		return
+
+	def displayOutput(self,outBuffer):
+		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
+		outputConsole.append(outBuffer)
 
 
 	# Put all UI element event handlers here
@@ -88,7 +87,7 @@ class Controller(QtCore.QObject):
 		return
 	
 	def on_button_build(self,checked):
-		build();
+		self.build();
 		return
 	
 	def on_actionNew_Project(self,checked):

@@ -31,7 +31,7 @@ class BuildManager():
     def __init__(self, controller):
 
         # build (compilation) output buffer
-        self.buffer
+        self.buffer = ""
 
         # controller
         self.controller = controller
@@ -53,7 +53,7 @@ class BuildManager():
 
         # initial text environment contents
         #self.contents = ""
-        self.process = QtCore.QProcess(self)
+        self.process = QtCore.QProcess()
 
         # custom handles for process signals
         self.process.started.connect(self.on_started)
@@ -77,18 +77,20 @@ class BuildManager():
     #
     def on_finished(self):
         # parse the results of the compilation
-        results = self.compiler.parse_output(self.buffer)
+        results = self.compiler.parse_clang_output(self.compiler, self.buffer)
 
         # determine if compilation was successful & return appropriate messages. 
         if self.process.exitCode() == 0:
-            self.compile_success.emit(results)
+            #self.compile_success.emit(results)
+			self.write(results)
             #self.write("[ Compilation Successful ]")
-            self.write("[ Compilation Successful ]")
+			self.write("[ Compilation Successful ]")
         else:
-            self.compile_fail.emit(results)
+            #self.compile_fail.emit(results)
+			self.write(results)
 
         # call controller method "compilationOutput" to display buffer contents
-        self.controller.compilationOutput(self.buffer)
+        self.controller.displayOutput(self.buffer)
 
     #
     # In the case of stdError, return the appropriate messages
@@ -96,6 +98,7 @@ class BuildManager():
     def on_stderr(self):
         data = self.process.readAllStandardError()
         self.write(data)
+        self.controller.displayOutput(self.buffer)
 
     #
     # In the case of an error, return the appropriate messages
@@ -103,6 +106,7 @@ class BuildManager():
     def on_error(self):
         data = "[ The compiler exited with an error: %s ]" % str(self.process.error())
         self.write(data)
+        self.controller.displayOutput(self.buffer)
 
 
     ##################################################################
