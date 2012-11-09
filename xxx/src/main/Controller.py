@@ -52,12 +52,21 @@ class Controller(QtCore.QObject):
 
 	# Put all basic class functions here
 	def build():
+        executable = os.path.join(self.project_model.project_directory, "a.out")
+        files = self.project_model.filenames()
+        self.view_window.build_output.compile_project(files, executable)
+        print "Controller: Build triggered. Files " + str(files)
+		#tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+        #self.buildManager.build()
                 
 		return
 	def run():
 		return
 	def stop():
 		return
+
+    def compilationOutput(outBuffer)
+
 
 	# Put all UI element event handlers here
 	def on_actionSave(self,checked):
@@ -84,30 +93,44 @@ class Controller(QtCore.QObject):
 	
 	def on_actionNew_Project(self,checked):
 		return
+
 	def on_actionOpen_Project(self,checked):
 		return
+
 	def on_actionNew_File(self,checked):
 		return
+
 	def on_actionSave_All(self,checked):
 		return
+
 	def on_actionClose_Project(self,checked):
 		return
+
 	def on_actionQuit(self,checked):
 		return
+
 	def on_actionUndo(self,checked):
 		return
+
 	def on_actionRedo(self,checked):
 		return
+
 	def on_actionCut(self,checked):
 		return
+
 	def on_actionCopy(self,checked):
 		return
+
 	def on_actionPaste(self,checked):
 		return
+
 	def on_actionSelect_All(self,checked):
 		return
+
 	def on_actionFind_Replace(self,checked):
 		return
+
 	def on_action(self,checked):
 		return
+
 
