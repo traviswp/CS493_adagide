@@ -131,7 +131,7 @@ class BuildManager():
 
     def build(self, files, executableName, runtimeArgs):
         # TODO: kill old processes...(Question: How do we know which ones are ours to kill?)
-        #self.clear()
+        self.clear()
 
         # pass all files, args, & the executable to the compiler's run method
         # (NOTE: compiler set in CompilationManager initialization)
