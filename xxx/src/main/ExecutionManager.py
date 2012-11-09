@@ -102,7 +102,7 @@ class ExecutionManager(QtGui.QPlainTextEdit):
 
 	def run(self, filename, arg_string):
 		self.clear()
-		args = shlex.split(args_string)
+		args = shlex.split(arg_string)
 		self.process.start(QtCore.QString(filename), QtCore.QStringList(args))
 
 		# TODO kill old processes

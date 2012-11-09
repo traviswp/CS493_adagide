@@ -71,6 +71,7 @@ class BuildManager():
     #
     def on_started(self):
         self.write("[ Compilation Started ]\n")
+        print "the process was started"
 
     #
     # When the process finishes compilation, return the appropriate messages.
