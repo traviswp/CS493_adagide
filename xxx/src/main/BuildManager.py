@@ -70,13 +70,15 @@ class BuildManager():
     # When the process starts, ...
     #
     def on_started(self):
+        print "windows check 2"
         self.write("[ Compilation Started ]\n")
-        print "the process was started"
+        
 
     #
     # When the process finishes compilation, return the appropriate messages.
     #
     def on_finished(self):
+        print "windows check 3"
         # parse the results of the compilation
         results = self.compiler.parse_clang_output(self.compiler, self.buffer)
 
@@ -97,17 +99,19 @@ class BuildManager():
     # In the case of stdError, return the appropriate messages
     #
     def on_stderr(self):
-		data = self.process.readAllStandardError()
-		self.write(data)
+        print "windows check 4"
+        data = self.process.readAllStandardError()
+        self.write(data)
         #self.controller.displayOutput(self.buffer)
 
     #
     # In the case of an error, return the appropriate messages
     #
     def on_error(self):
+        print "windows check 5" 
         data = "[ The compiler exited with an error: %s ]" % str(self.process.error())
         self.write(data)
-        #self.controller.displayOutput(self.buffer)
+        self.controller.displayOutput(self.buffer)
 
 
     ##################################################################
@@ -116,6 +120,7 @@ class BuildManager():
 
     def write(self, data):
         self.buffer += str(data)
+        print "windows check one"
         #self.contents += str(data)
         #self.redraw()
         #return data
