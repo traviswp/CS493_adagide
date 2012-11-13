@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>977</width>
-    <height>531</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -20,9 +32,12 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -30,25 +45,30 @@
        <bool>false</bool>
       </property>
       <widget class="QTabWidget" name="tabWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Welcome</string>
+         <string>Tab 1</string>
         </attribute>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QsciScintilla" name="textEdit">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="whatsThis">
-            <string/>
-           </property>
-          </widget>
+          <widget class="QTextEdit" name="textEdit"/>
          </item>
         </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Tab 2</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_3"/>
        </widget>
       </widget>
       <widget class="QFrame" name="frame">
@@ -101,6 +121,9 @@
             <height>24</height>
            </size>
           </property>
+          <property name="shortcut">
+           <string>F5</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -123,6 +146,9 @@
             <width>24</width>
             <height>24</height>
            </size>
+          </property>
+          <property name="shortcut">
+           <string>F6</string>
           </property>
          </widget>
         </item>
@@ -156,11 +182,92 @@
             <height>24</height>
            </size>
           </property>
+          <property name="shortcut">
+           <string>F7</string>
+          </property>
          </widget>
         </item>
        </layout>
       </widget>
-      <widget class="QTextEdit" name="outputTextBox"/>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QTextEdit" name="textEdit_3">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>202</height>
+           </size>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="margin">
+            <number>1</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="placeholderText">
+              <string notr="true" comment="&gt;&gt;" extracomment="&gt;&gt;">&gt;&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="button_enter">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Enter</string>
+             </property>
+             <property name="shortcut">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -170,8 +277,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>977</width>
-     <height>21</height>
+     <width>800</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProject">
@@ -228,7 +335,6 @@
    <addaction name="menuAction"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNewProject">
    <property name="icon">
     <iconset theme="new-project" resource="../../resources/cs140adagide.qrc">
@@ -278,6 +384,9 @@
    <property name="text">
     <string>Save</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionSave_All">
    <property name="text">
@@ -310,6 +419,9 @@
    <property name="text">
     <string>Undo</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
   </action>
   <action name="actionRedo">
    <property name="icon">
@@ -318,6 +430,9 @@
    </property>
    <property name="text">
     <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actionCut">
@@ -328,6 +443,9 @@
    <property name="text">
     <string>Cut</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
   </action>
   <action name="actionCopy">
    <property name="icon">
@@ -336,6 +454,9 @@
    </property>
    <property name="text">
     <string>Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionPaste">
@@ -346,6 +467,9 @@
    <property name="text">
     <string>Paste</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
   </action>
   <action name="actionSelect_All">
    <property name="icon">
@@ -354,6 +478,9 @@
    </property>
    <property name="text">
     <string>Select All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="actionFind_Replace">
@@ -364,6 +491,9 @@
    <property name="text">
     <string>Find/Replace</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
   </action>
   <action name="actionGoto">
    <property name="icon">
@@ -372,6 +502,9 @@
    </property>
    <property name="text">
     <string>Goto Line</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
   <action name="actionReformat">
@@ -391,6 +524,9 @@
    <property name="text">
     <string>Build</string>
    </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
   </action>
   <action name="actionRun">
    <property name="icon">
@@ -399,6 +535,9 @@
    </property>
    <property name="text">
     <string>Run</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -418,21 +557,19 @@
    <property name="text">
     <string>Save As</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
   </action>
   <action name="actionStop">
    <property name="text">
     <string>Stop</string>
    </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QsciScintilla</class>
-   <extends>QFrame</extends>
-   <header>Qsci/qsciscintilla.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../../resources/cs140adagide.qrc"/>
  </resources>
