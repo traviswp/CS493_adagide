@@ -1,0 +1,9 @@
+# ignore specific files
+.DS_Store
+
+# ignore .pyc files
+*.pyc
+
+#ignore temporary files (backups)
+*.swp
+*~
