@@ -108,7 +108,7 @@ class ProjectFile(FileEditor):
 
     def on_modification_changed(self, value):
         self.modificationStateChanged.emit(self)
-'''
+
 class ProjectModel(QtCore.QObject):
     
     #signals emitted by this model
@@ -256,4 +256,4 @@ class ProjectModel(QtCore.QObject):
         temp = [os.path.join(self.project_directory, f.filename) for f in self.file_editors if f.extension == "cpp"]
         return temp
 
-'''
+

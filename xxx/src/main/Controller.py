@@ -7,6 +7,7 @@ from FileManager import FileManager
 from ExecutionManager import ExecutionManager
 from BuildManager import BuildManager
 from EditorPane import *
+from AuxiliaryDialogs import *
 import copy
 """
 The Controller is the glue that holds the project together.
@@ -141,11 +142,11 @@ class Controller(QtCore.QObject):
 		return
 	
 	def on_actionRun(self,checked):
-                self.run();
+		self.run();
 		return
 
 	def on_button_run(self,checked):
-                self.run();
+		self.run();
 		return
 
 	def on_actionNew_File(self,checked):
@@ -181,6 +182,13 @@ class Controller(QtCore.QObject):
 	def on_actionFind_Replace(self,checked):
 		return
 
-	def on_action(self,checked):
+	def on_actionNewProject(self,checked):
+		newDialog=NewProjectDialog(self.mainWindow)
+		newDialog.open()
+		return
+
+	def on_actionOpen_Project(self,checked):
+		newDialog=OpenProjectDialog(self.mainWindow)
+		newDialog.open()
 		return
 
