@@ -55,7 +55,6 @@ class Controller(QtCore.QObject):
 			except AttributeError:
 				if(debugMode):
 					print "Controller should have a member function called '%s', but doesn't!" %("on_"+itemName)
-
 	# Put all basic class functions here
 	def build(self):
 
@@ -181,14 +180,24 @@ class Controller(QtCore.QObject):
 
 	def on_actionFind_Replace(self,checked):
 		return
-
+'''
 	def on_actionNewProject(self,checked):
+		#Call close_project
 		newDialog=NewProjectDialog(self.mainWindow)
+		newDialog.fileSelected.connect(self.on_open_project_accepted)
 		newDialog.open()
-		return
+
+	def on_new_project_accepted(self, filename):
+		self.projectModel.open(str(filename))		
 
 	def on_actionOpen_Project(self,checked):
+		#Call close_project
+		
 		newDialog=OpenProjectDialog(self.mainWindow)
-		newDialog.open()
-		return
+		newDialog.fileSelected.connect(self.on_new_project_accepted)
+		projectname=newDialog.open()
+
+	def on_open_project_accepted(self, filename):
+		self.projectModel.open(str(filename))			
+'''
 
