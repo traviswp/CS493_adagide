@@ -2,6 +2,8 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 from PyQt4 import Qsci
 
+import sys
+
 from MainWindow import Ui_MainWindow
 from FileManager import FileManager
 from ExecutionManager import ExecutionManager
@@ -178,6 +180,7 @@ class Controller(QtCore.QObject):
 
 	def on_actionQuit(self,checked):
 		self.on_actionClose_Project(checked)
+		sys.exit(0)
 		pass
 
 	def on_actionUndo(self,checked):
