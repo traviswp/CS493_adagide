@@ -7,8 +7,8 @@ from FileManager import FileManager
 from ExecutionManager import ExecutionManager
 from BuildManager import BuildManager
 from EditorPane import *
-#from AuxiliaryDialogs import *
 import copy
+
 """
 The Controller is the glue that holds the project together.
 	-It is a bridge that connects the User Interface to the backend code.
@@ -167,13 +167,18 @@ class Controller(QtCore.QObject):
 		return
 
 	def on_actionSave_All(self,checked):
+		for projectFile in self.fileManager.files:
+			projectFile.save()
 		return
 
 	def on_actionClose_Project(self,checked):
+		for projectFile in self.fileManager.files:
+			closeFile(projectFile)
 		return
 
 	def on_actionQuit(self,checked):
-		return
+		self.on_actionClose_Project(checked)
+		pass
 
 	def on_actionUndo(self,checked):
 		return
@@ -194,6 +199,17 @@ class Controller(QtCore.QObject):
 		return
 
 	def on_actionFind_Replace(self,checked):
+		return
+
+
+
+	def closeFile(self,projectFile):
+		if projectFile.isModified() == True:
+			print 'got it!'
+			#prompt for save
+			#save or do not
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.removeTab(tabWidget.indexOf(projectFile));
 		return
 '''
 	def on_actionNewProject(self,checked):

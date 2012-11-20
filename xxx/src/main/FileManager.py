@@ -12,8 +12,9 @@ from PyQt4 import QtGui
 
 class FileManager:
 	def __init__(self):
-		self.projectOpen = false
-		self.projectPath = none
+		self.projectOpen = False
+		self.projectPath = None
+		self.count = 0
 		self.files = []
 		return
 
