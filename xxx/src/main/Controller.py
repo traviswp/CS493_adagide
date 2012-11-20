@@ -7,7 +7,7 @@ from FileManager import FileManager
 from ExecutionManager import ExecutionManager
 from BuildManager import BuildManager
 from EditorPane import *
-from AuxiliaryDialogs import *
+#from AuxiliaryDialogs import *
 import copy
 """
 The Controller is the glue that holds the project together.
@@ -55,6 +55,10 @@ class Controller(QtCore.QObject):
 			except AttributeError:
 				if(debugMode):
 					print "Controller should have a member function called '%s', but doesn't!" %("on_"+itemName)
+
+		inputTextBox = self.mainWindow.findChild(QtGui.QLineEdit, 'stdinTextBox');
+		inputTextBox.returnPressed.connect(self.enter);
+
 	# Put all basic class functions here
 	def build(self):
 
@@ -106,6 +110,13 @@ class Controller(QtCore.QObject):
 		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
 		outputConsole.append(outBuffer)
 
+	def enter(self):
+		inputTextBox = self.mainWindow.findChild(QtGui.QLineEdit, 'stdinTextBox')
+		inputLine = inputTextBox.text()
+		inputTextBox.clear()
+
+		self.executionManager.writeDataToProcess(str(inputLine) + '\n')
+
 
 	# Put all UI element event handlers here
 	def on_actionSave(self,checked):
@@ -130,6 +141,10 @@ class Controller(QtCore.QObject):
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.removeTab(0)
 
+		return
+
+	def on_button_enter(self,checked):
+		self.enter();
 		return
 
 	def on_actionBuild(self,checked):

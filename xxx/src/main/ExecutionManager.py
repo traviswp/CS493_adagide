@@ -107,6 +107,9 @@ class ExecutionManager():
 		args = shlex.split(arg_string)
 		self.process.setWorkingDirectory(filedir)
 		self.process.start(QtCore.QString(filename), QtCore.QStringList(args))
+	
+	def writeDataToProcess(self, data):
+		self.process.writeData(data)
 
 		# TODO kill old processes
 
