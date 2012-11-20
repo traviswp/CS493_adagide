@@ -126,23 +126,11 @@ class Controller(QtCore.QObject):
 		current_tab = tabWidget.currentWidget() 
 		current_tab.save()
 		return
-
+	#To be changed to Import File
 	def on_actionOpen_File(self,checked):
 		fullname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory='./')
 		if fullname != "":
-			fpath=os.path.dirname(str(fullname))
-			fname=str(fullname)+""
-			fname=fname.replace(fpath+'/',"")
-			newEditorPane=ProjectFile(fname,fullname)
-
-			tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-
-			tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
-
-		# HACK: get the current tab which contains the file to delete
-		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		tabWidget.removeTab(0)
-
+			self.openFile(fullname)
 		return
 
 	def on_button_enter(self,checked):
@@ -162,7 +150,7 @@ class Controller(QtCore.QObject):
 		return
 
 	def on_button_run(self,checked):
-		self.run();
+		self.run()
 		return
 
 	def on_actionNew_File(self,checked):
@@ -175,7 +163,11 @@ class Controller(QtCore.QObject):
 
 	def on_actionClose_Project(self,checked):
 		for projectFile in self.fileManager.files:
-			closeFile(projectFile)
+			self.closeFile(projectFile)
+		self.fileManager.files=[]
+		self.fileManager.projectOpen=False
+		self.fileManager.projectPath=None
+		self.count=0
 		return
 
 	def on_actionQuit(self,checked):
@@ -214,13 +206,27 @@ class Controller(QtCore.QObject):
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.removeTab(tabWidget.indexOf(projectFile));
 		return
-'''
-	def on_actionNewProject(self,checked):
-		#Call close_project
-		newDialog=NewProjectDialog(self.mainWindow)
-		newDialog.fileSelected.connect(self.on_open_project_accepted)
-		newDialog.open()
 
+	def openFile(self,projectFile):
+		fpath=os.path.dirname(str(projectFile))
+		fname=str(projectFile)+""
+		fname=fname.replace(fpath+'/',"")
+		newEditorPane=ProjectFile(fname,projectFile)
+		self.fileManager.files.append(newEditorPane)
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
+		return
+
+	def on_actionOpen_Project(self,checked):
+		self.on_actionClose_Project(checked)
+		dirPath = QtGui.QFileDialog.getExistingDirectory(parent = self.mainWindow, caption='Open An Existing Project', directory='~/')
+		self.fileManager.projectPath = str(dirPath)
+		for filename in os.listdir(str(dirPath)):
+			if fnmatch.fnmatch(filename, '*.c') or fnmatch.fnmatch(filename, '*.h') or fnmatch.fnmatch(filename, '*.cpp') or fnmatch.fnmatch(filename, '*.cxx'):
+				self.openFile(dirPath +'/'+ filename)      
+		return
+
+'''
 	def on_new_project_accepted(self, filename):
 		self.projectModel.open(str(filename))		
 
