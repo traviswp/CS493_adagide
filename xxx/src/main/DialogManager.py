@@ -7,7 +7,7 @@ class DialogManager:
 		self.openProjectDialog=OpenProjectDialog(mainWindow)
 		self.newProjectDialog=NewProjectDialog(mainWindow)
 		self.confirmDeleteDialog=ConfirmDeleteDialog(mainWindow)
-
+		self.FindReplaceDialog=FindReplaceDialog(mainWindow)
 
 
 class NewFileDialog(QtGui.QInputDialog):
@@ -60,7 +60,7 @@ class ConfirmDeleteDialog(QtGui.QMessageBox):
             return True
         else:
             return False
-'''        
+     
 class UnsavedFilesDialog(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
@@ -125,17 +125,18 @@ class FindReplaceDialog(QtGui.QDialog):
     find = QtCore.pyqtSignal(dict, str)
     
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+		QtGui.QDialog.__init__(self, parent)
 
-        # Set up the user interface from .ui file
-        uic.loadUi("resources/FindReplaceDialog.ui", self)
-        
-        self.setModal(False)
-        
-        self.close_button.clicked.connect(self.hide)
-        self.replace_all_button.clicked.connect(self.replace_all_button_clicked)
-        self.replace_button.clicked.connect(self.replace_button_clicked)
-        self.find_button.clicked.connect(self.find_button_clicked)
+		# Set up the user interface from .ui file
+		path = "../../resources/ui/"
+		uic.loadUi(path+"FindReplaceDialog.ui", self)
+
+		self.setModal(False)
+
+		self.close_button.clicked.connect(self.hide)
+		#self.replace_all_button.clicked.connect(self.replace_all_button_clicked)
+		#self.replace_button.clicked.connect(self.replace_button_clicked)
+		#self.find_button.clicked.connect(self.find_button_clicked)
       
     def get_check_states(self):
         "Get a dictionary of the states of the check boxes."
@@ -148,13 +149,16 @@ class FindReplaceDialog(QtGui.QDialog):
         
         return check_states
         
-    def replace_all_button_clicked(self):
-        self.replace_all.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
+	def replace_all_button_clicked(self):
+		print "replace all"
+		self.replace_all.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
         
-    def replace_button_clicked(self):
-        self.replace.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
+	def replace_button_clicked(self):
+		print "replace"
+		self.replace.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
         
-    def find_button_clicked(self):
-        self.find.emit(self.get_check_states(), self.search_for_text.text())
+	def find_button_clicked(self):
+		print "find"
+		self.find.emit(self.get_check_states(), self.search_for_text.text())
         
-'''
+

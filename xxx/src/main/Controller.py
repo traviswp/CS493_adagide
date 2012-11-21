@@ -9,7 +9,7 @@ from FileManager import FileManager
 from ExecutionManager import ExecutionManager
 from BuildManager import BuildManager
 from EditorPane import *
-import copy
+from DialogManager import *
 
 """
 The Controller is the glue that holds the project together.
@@ -32,6 +32,7 @@ class Controller(QtCore.QObject):
 		self.fileManager = FileManager()
 		self.executionManager = ExecutionManager(self)
 		self.buildManager = BuildManager(self)
+		self.DialogManager = DialogManager(self.mainWindow)
 		
 		# HACK: get the current tab which contains the file to delete
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
@@ -183,29 +184,6 @@ class Controller(QtCore.QObject):
 		sys.exit(0)
 		pass
 
-	def on_actionUndo(self,checked):
-		return
-
-	def on_actionRedo(self,checked):
-		return
-
-	def on_actionCut(self,checked):
-		return
-
-	def on_actionCopy(self,checked):
-		return
-
-	def on_actionPaste(self,checked):
-		return
-
-	def on_actionSelect_All(self,checked):
-		return
-
-	def on_actionFind_Replace(self,checked):
-		return
-
-
-
 	def closeFile(self,projectFile):
 		if projectFile.isModified() == True:
 			print 'got it!'
@@ -233,6 +211,125 @@ class Controller(QtCore.QObject):
 			if fnmatch.fnmatch(filename, '*.c') or fnmatch.fnmatch(filename, '*.h') or fnmatch.fnmatch(filename, '*.cpp') or fnmatch.fnmatch(filename, '*.cxx'):
 				self.openFile(dirPath +'/'+ filename)      
 		return
+
+	########################################################################
+
+	# Undo
+	def on_actionUndo(self,checked):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+			current_tab.undo()
+
+	# Redo
+	def on_actionRedo(self,checked):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+			current_tab.redo()
+
+	# Cut
+	def on_actionCut(self,checked):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+			current_tab.cut()
+
+	# Copy
+	def on_actionCopy(self,checked):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+			current_tab.copy()
+
+	# Paste
+	def on_actionPaste(self,checked):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+			current_tab.paste()
+
+	# Select All
+	def on_actionSelect_All(self,checked):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+			current_tab.selectAll()
+
+	# Find & Replace
+	def on_actionFind_Replace(self,checked):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+			self.DialogManager.FindReplaceDialog.open()
+			#self.DialogManager.FindReplaceDialog.replace_all.connect(self.on_replace_all)
+			#self.DialogManager.FindReplaceDialog.replace.connect(self.on_replace)
+			#self.DialogManager.FindReplaceDialog.find.connect(self.on_find)
+
+	# Replace All
+	def replace_all(self, check_states, search_for, replace_with):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 
+		if current_tab is not None:
+
+			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
+
+			if current_tab.current_search_selection != search_description_tup:
+				self.on_find(check_states, search_for)
+
+			while current_tab.current_search_selection == search_description_tup:
+				current_tab.replace(replace_with)
+
+				selection_start_row, selection_start_col, selection_end_row, selection_end_col = current_tab.getSelection()
+
+				current_tab.setCursorPosition(selection_end_row, selection_end_col)
+
+				self.on_find(check_states, search_for)
+
+	# Replace
+	def replace(self, check_states, search_for, replace_with):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget()
+		if current_tab is not None:
+
+			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
+
+			if current_tab.current_search_selection != search_description_tup:
+				self.on_find(check_states, search_for)
+
+			if current_tab.current_search_selection == search_description_tup:
+				current_tab.replace(replace_with)
+
+				selection_start_row, selection_start_col, selection_end_row, selection_end_col = current_tab.getSelection()
+
+				current_tab.setCursorPosition(selection_end_row, selection_end_col)
+
+				self.on_find(check_states, search_for)
+
+	# Find
+	def find(self, check_states, search_for):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget()
+		if current_tab is not None:
+
+			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
+
+			if current_tab.current_search_selection == search_description_tup:
+				was_found = current_tab.findNext()
+			else:
+				was_found = current_tab.findFirst(  search_for,
+													False,
+													check_states['match case'],
+													check_states['match entire word'],
+													check_states['wrap around'],
+													not check_states['search backward']
+												 )
+
+			if was_found:
+				#Set a variable indicating the the current selection is the result of a search.
+				current_tab.current_search_selection = search_description_tup
+
+	########################################################################
 
 '''
 	def on_new_project_accepted(self, filename):
