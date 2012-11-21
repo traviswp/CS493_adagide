@@ -13,7 +13,7 @@ from PyQt4 import QtGui
 class FileManager:
 	def __init__(self):
 		self.projectOpen = False
-		self.projectPath = None
+		self.projectPath = ""
 		self.count = 0
 		self.files = []
 		return
