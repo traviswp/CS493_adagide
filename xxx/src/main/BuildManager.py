@@ -95,7 +95,8 @@ class BuildManager():
     #
     def on_stderr(self):
 		self.clear()
-		data = self.process.readAllStandardError() 
+		data = '<font color=red>'+self.process.readAllStandardError()+'</font>'
+		#data = self.compiler.parse_clang_output(self.compiler, self.process.readAllStandardError())
 		self.write(data)
 
     #

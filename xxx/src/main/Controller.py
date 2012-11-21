@@ -106,16 +106,24 @@ class Controller(QtCore.QObject):
 	def stop(self):
 		return
 
-	def displayOutput(self,outBuffer):
-		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
-		outputConsole.append(outBuffer)
+	def displayOutput(self,outBuffer,fontFormatHTML=None):
+		if fontFormatHTML != None:
+			outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
+			outputConsole.append(fontFormatHTML + outBuffer + '</font>')
+		else:
+			outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
+			outputConsole.append(outBuffer)
 
 	def enter(self):
-		inputTextBox = self.mainWindow.findChild(QtGui.QLineEdit, 'stdinTextBox')
-		inputLine = inputTextBox.text()
-		inputTextBox.clear()
+		if self.executionManager.process.state() == 2: # 0->not running, 1->starting, 2->running
+			inputTextBox = self.mainWindow.findChild(QtGui.QLineEdit, 'stdinTextBox')
+			inputLine = inputTextBox.text()
+			inputTextBox.clear()
 
-		self.executionManager.writeDataToProcess(str(inputLine) + '\n')
+			outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
+			outputConsole.append('<font color="blue">' + inputLine + '</font>')
+
+			self.executionManager.writeDataToProcess(str(inputLine) + '\n')
 
 
 	# Put all UI element event handlers here

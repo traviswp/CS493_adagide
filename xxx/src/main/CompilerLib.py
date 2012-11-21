@@ -91,7 +91,7 @@ class ClangCompiler():
 		for i, line in enumerate(lines):
 			if self.is_error_line(line) or self.is_warning_line(line):
 				sections.append(i)
-
+		
 		# for each warning/error message, get the 'full message' and append
 		# this data to a dictionary with other warning/error information. 
 		errors = []
@@ -104,5 +104,6 @@ class ClangCompiler():
 				temp['full_msg'] = "\n".join(lines[line_pos:])
 
 			errors.append(temp)
+			
 
 		return errors
