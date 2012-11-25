@@ -7,7 +7,7 @@ class DialogManager:
 		self.openProjectDialog=OpenProjectDialog(mainWindow)
 		self.newProjectDialog=NewProjectDialog(mainWindow)
 		self.confirmDeleteDialog=ConfirmDeleteDialog(mainWindow)
-		self.FindReplaceDialog=FindReplaceDialog(mainWindow)
+		self.findReplaceDialog=FindReplaceDialog(mainWindow)
 
 
 class NewFileDialog(QtGui.QInputDialog):
@@ -118,13 +118,13 @@ class AboutDialog(QtGui.QDialog):
         self.accepted.connect(self.hide)
         
 class FindReplaceDialog(QtGui.QDialog):
-    #the dict is the check states of the four checkboxes
-    #the strings are the text to search for and the text to replace with
-    replace_all = QtCore.pyqtSignal(dict, str, str)
-    replace = QtCore.pyqtSignal(dict, str, str)
-    find = QtCore.pyqtSignal(dict, str)
-    
-    def __init__(self, parent):
+	#the dict is the check states of the four checkboxes
+	#the strings are the text to search for and the text to replace with
+	replace_all = QtCore.pyqtSignal(dict, str, str)
+	replace = QtCore.pyqtSignal(dict, str, str)
+	find = QtCore.pyqtSignal(dict, str)
+
+	def __init__(self, parent):
 		QtGui.QDialog.__init__(self, parent)
 
 		# Set up the user interface from .ui file
@@ -134,29 +134,29 @@ class FindReplaceDialog(QtGui.QDialog):
 		self.setModal(False)
 
 		self.close_button.clicked.connect(self.hide)
-		#self.replace_all_button.clicked.connect(self.replace_all_button_clicked)
-		#self.replace_button.clicked.connect(self.replace_button_clicked)
-		#self.find_button.clicked.connect(self.find_button_clicked)
-      
-    def get_check_states(self):
-        "Get a dictionary of the states of the check boxes."
-        check_states = {}
-        
-        check_states['match case'] = self.match_case_checkbox.isChecked()
-        check_states['match entire word'] = self.match_entire_word_checkbox.isChecked()
-        check_states['search backward'] = self.search_backward_checkbox.isChecked()
-        check_states['wrap around'] = self.wrap_around_checkbox.isChecked()
-        
-        return check_states
-        
+		self.replace_all_button.clicked.connect(self.replace_all_button_clicked)
+		self.replace_button.clicked.connect(self.replace_button_clicked)
+		self.find_button.clicked.connect(self.find_button_clicked)
+
+	def get_check_states(self):
+		"Get a dictionary of the states of the check boxes."
+		check_states = {}
+
+		check_states['match case'] = self.match_case_checkbox.isChecked()
+		check_states['match entire word'] = self.match_entire_word_checkbox.isChecked()
+		check_states['search backward'] = self.search_backward_checkbox.isChecked()
+		check_states['wrap around'] = self.wrap_around_checkbox.isChecked()
+
+		return check_states
+
 	def replace_all_button_clicked(self):
 		print "replace all"
 		self.replace_all.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
-        
+
 	def replace_button_clicked(self):
 		print "replace"
 		self.replace.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
-        
+
 	def find_button_clicked(self):
 		print "find"
 		self.find.emit(self.get_check_states(), self.search_for_text.text())

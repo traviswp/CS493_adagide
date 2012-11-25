@@ -34,6 +34,11 @@ class Controller(QtCore.QObject):
 		self.buildManager = BuildManager(self)
 		self.DialogManager = DialogManager(self.mainWindow)
 		
+		# Connect signals from FindReplaceDialog to controller methods
+		self.DialogManager.findReplaceDialog.find.connect(self.find)
+		self.DialogManager.findReplaceDialog.replace.connect(self.replace)
+		self.DialogManager.findReplaceDialog.replace_all.connect(self.replace_all)
+
 		# HACK: get the current tab which contains the file to delete
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.removeTab(1)
@@ -261,10 +266,7 @@ class Controller(QtCore.QObject):
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 		
 		if current_tab is not None:
-			self.DialogManager.FindReplaceDialog.open()
-			#self.DialogManager.FindReplaceDialog.replace_all.connect(self.on_replace_all)
-			#self.DialogManager.FindReplaceDialog.replace.connect(self.on_replace)
-			#self.DialogManager.FindReplaceDialog.find.connect(self.on_find)
+			self.DialogManager.findReplaceDialog.open()
 
 	# Replace All
 	def replace_all(self, check_states, search_for, replace_with):
@@ -275,7 +277,7 @@ class Controller(QtCore.QObject):
 			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
 
 			if current_tab.current_search_selection != search_description_tup:
-				self.on_find(check_states, search_for)
+				self.find(check_states, search_for)
 
 			while current_tab.current_search_selection == search_description_tup:
 				current_tab.replace(replace_with)
@@ -284,7 +286,7 @@ class Controller(QtCore.QObject):
 
 				current_tab.setCursorPosition(selection_end_row, selection_end_col)
 
-				self.on_find(check_states, search_for)
+				self.find(check_states, search_for)
 
 	# Replace
 	def replace(self, check_states, search_for, replace_with):
@@ -295,7 +297,7 @@ class Controller(QtCore.QObject):
 			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
 
 			if current_tab.current_search_selection != search_description_tup:
-				self.on_find(check_states, search_for)
+				self.find(check_states, search_for)
 
 			if current_tab.current_search_selection == search_description_tup:
 				current_tab.replace(replace_with)
@@ -304,7 +306,7 @@ class Controller(QtCore.QObject):
 
 				current_tab.setCursorPosition(selection_end_row, selection_end_col)
 
-				self.on_find(check_states, search_for)
+				self.find(check_states, search_for)
 
 	# Find
 	def find(self, check_states, search_for):
