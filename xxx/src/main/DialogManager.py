@@ -4,8 +4,9 @@ class DialogManager:
 	def __init__(self,mainWindow):
 		self.newFileDialog=NewFileDialog(mainWindow)
 		self.gotoLineDialog=GotoLineDialog(mainWindow)
-		self.openProjectDialog=OpenProjectDialog(mainWindow)
-		self.newProjectDialog=NewProjectDialog(mainWindow)
+		#comment these next two out when errors occur
+		#self.openProjectDialog=OpenProjectDialog(mainWindow)
+		#self.newProjectDialog=NewProjectDialog(mainWindow)
 		self.confirmDeleteDialog=ConfirmDeleteDialog(mainWindow)
 		self.findReplaceDialog=FindReplaceDialog(mainWindow)
 
@@ -30,17 +31,15 @@ class GotoLineDialog(QtGui.QInputDialog):
         
 class OpenProjectDialog(QtGui.QFileDialog):
     def __init__(self, parent):
-        QtGui.QFileDialog.__init__(self, parent, QtCore.QString("Open Project Directory"), "./")
-        
-        self.setFileMode(QtGui.QFileDialog.Directory)
-        self.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
-        self.setOption(QtGui.QFileDialog.DontUseNativeDialog, True)
-        self.setModal(True)
+		QtGui.QFileDialog.__init__(self, parent=parent, caption=QtCore.QString("Open Project Directory"), directory=".")
+		self.setFileMode(QtGui.QFileDialog.Directory)
+		self.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
+		self.setOption(QtGui.QFileDialog.DontUseNativeDialog, True)
+		self.setModal(True)
         
 class NewProjectDialog(QtGui.QFileDialog):
     def __init__(self, parent):
-        QtGui.QFileDialog.__init__(self, parent, QtCore.QString("Create Project Directory"), "./")
-        
+        QtGui.QFileDialog.__init__(self, parent, QtCore.QString("Create Project Directory"), ".")
         self.setFileMode(QtGui.QFileDialog.AnyFile)
         self.setAcceptMode(QtGui.QFileDialog.AcceptSave)
         self.setOption(QtGui.QFileDialog.DontUseNativeDialog, True)

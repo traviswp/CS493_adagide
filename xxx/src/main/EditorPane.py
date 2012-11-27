@@ -92,7 +92,34 @@ class ProjectFile(FileEditor):
             self.write(self.filehandle)
             self.filehandle.flush()
             self.setModified(False)
-    
+	
+    def makeLocal(self,projectDir,shortName):
+        "Save a local copy of this file"
+        if self.filehandle != None:
+			for filename in os.listdir(projectDir):
+				if shortName == filename:
+					#A file by that name already exists
+					#overwrite reject or prompt
+					return False
+			self.filehandle.seek(0)
+			self.filehandle.resize(0)
+			#self.write(self.filehandle)
+			
+			newFileHandle=QtCore.QFile(projectDir+'/'+shortName)
+			newFileHandle.open(QtCore.QIODevice.ReadWrite)
+			newFileHandle.seek(0)
+			newFileHandle.resize(0)
+			self.write(newFileHandle)
+			
+			self.filehandle.flush()
+			newFileHandle.flush()
+			
+			self.filehandle.close()
+			
+			self.filehande=newFileHandle
+			self.setModified(False)
+			return True
+				
     def close(self):
         self.filehandle.close()
         self.filehandle = None

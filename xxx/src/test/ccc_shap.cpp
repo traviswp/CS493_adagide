@@ -19,7 +19,7 @@
 #include <cstdio>
 
 #include "ccc_shap.h"
-
+teehheee
 Point::Point()
 {  
    x = 0.0;

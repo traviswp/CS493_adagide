@@ -17,7 +17,7 @@ class FileManager:
 		self.count = 0
 		self.files = []
 		return
-
+'''
 	def closeProject(self):
 		#prompt to save each modified file
 		return none
@@ -38,7 +38,7 @@ class FileManager:
 	def saveAll(self):
 		#call save on all open files
 		return none
-
+'''
 
 '''
 class ProjectModel(QtCore.QObject):
