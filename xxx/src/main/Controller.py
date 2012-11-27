@@ -154,13 +154,26 @@ class Controller(QtCore.QObject):
 	# File Controls                                                    #
 	####################################################################
 	def on_actionNew_File(self,checked):
+		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
+			newFileName='ted.h'#open a dialog to get the file name
+			if newFileName != "" and newFileName != None:
+				for filename in os.listdir(self.fileManager.projectPath):
+					if newFileName == filename:
+						#A file by that name already exists
+						#overwrite reject or prompt
+						return	
+				fullname=self.fileManager.projectPath+"/"+newFileName
+				newEditor=self.openFile(fullname)
+				newEditor.save()
 		return
 		
 	#To be changed to Import File	
 	def on_actionOpen_File(self,checked):
-		fullname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory=self.fileManager.projectPath)
-		if fullname != "":
-			self.create_local_copy(fullname)
+		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
+			fullname=QtGui.QFileDialog.getOpenFileName(caption='Open file',directory=self.fileManager.projectPath)
+			if fullname != "" and fullname != None:
+				newEditor=self.openFile(fullname)
+				newEditor.setFile(newDirectory=self.fileManager.projectPath,newName=newEditor.filename)
 		return
 		
 	def on_actionSave(self,checked):
@@ -169,13 +182,23 @@ class Controller(QtCore.QObject):
 		current_tab.save()
 		return
 		
-	#prehaps we should call this function rename or clone	
 	def on_actionSave_As(self,checked):
-		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		current_tab = tabWidget.currentWidget() 
-		index = current_tab.TabPosition
-		self.rename_file(current_tab,index)
-		return
+		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
+			newFileName='jenny.c'#open a dialog to get the file name
+			if newFileName != "" and newFileName != None:
+				for filename in os.listdir(self.fileManager.projectPath):
+					if newFileName == filename:
+						#A file by that name already exists
+						#overwrite reject or prompt
+						return				
+			tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+			current_tab = tabWidget.currentWidget() 
+			index = tabWidget.indexOf(current_tab)
+			newTab=self.openFile(current_tab.file_path)
+			newTab.save()
+			current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=newFileName)
+			tabWidget.setTabText(index,newFileName)
+			return
 		
 	def on_actionSave_All(self,checked):
 		for projectFile in self.fileManager.files:
@@ -206,7 +229,7 @@ class Controller(QtCore.QObject):
 		if(dirPath != ""):
 			self.fileManager.projectPath = dirPath
 			for filename in os.listdir(dirPath):
-				if fnmatch.fnmatch(filename, '*.c') or fnmatch.fnmatch(filename, '*.h') or fnmatch.fnmatch(filename, '*.cpp') or fnmatch.fnmatch(filename, '*.cxx'):
+				if fnmatch.fnmatch(filename, '*.c') or fnmatch.fnmatch(filename, '*.h') or fnmatch.fnmatch(filename, '*.cpp') or fnmatch.fnmatch(filename, '*.cxx') or fnmatch.fnmatch(filename, '*.txt'):
 					self.openFile(dirPath +'/'+ filename)     
 		else:
 			#maybe give feedback
@@ -245,26 +268,7 @@ class Controller(QtCore.QObject):
 		self.fileManager.files.append(newEditorPane)
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
-		return
-	
-	def create_local_copy(self,fullname):
-		fpath=os.path.dirname(str(fullname))
-		fname=str(fullname)+""
-		fname=fname.replace(fpath+'/',"")		
-		newEditorPane=ProjectFile(fname,fullname)
-		newEditorPane.makeLocal(self.fileManager.projectPath,fname)
-		self.fileManager.files.append(newEditorPane)
-		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
-		return
-	def rename_file(self,editor,position):
-		fullname=editor.file_path
-		text=''#start a dialog and get the name of the file
-		if text != '':
-			myTabWidget.setTabText(position, text)
-			editor.makeLocal(self.fileManager.projectPath,fname)
-			os.remove(fullname)
-		return	
+		return newEditorPane
 
 	########################################################################
 
