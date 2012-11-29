@@ -27,15 +27,18 @@ class Controller(QtCore.QObject):
 		self.fileManager = FileManager()
 		self.executionManager = ExecutionManager(self)
 		self.buildManager = BuildManager(self)
-		self.DialogManager = DialogManager(self.mainWindow)
-		# Connect signals from FindReplaceDialog to controller methods
-		self.DialogManager.findReplaceDialog.find.connect(self.find)
-		self.DialogManager.findReplaceDialog.replace.connect(self.replace)
-		self.DialogManager.findReplaceDialog.replace_all.connect(self.replace_all)
+		self.dialogManager = DialogManager(self.mainWindow)
+		# Connect signals from newFileDialog and saveAsDialog to controller methods
+		self.dialogManager.newFileDialog.accepted.connect(self.on_new_file_accepted)
+		self.dialogManager.saveAsDialog.accepted.connect(self.on_save_As_file_accepted)
 		# HACK: get the current tab which contains the file to delete
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.removeTab(1)
-
+		#connect find replace dialog buttons to there methods
+		self.dialogManager.findReplaceDialog.close_button.clicked.connect(self.dialogManager.findReplaceDialog.hide)
+		self.dialogManager.findReplaceDialog.replace_all_button.clicked.connect(self.replace_all)
+		self.dialogManager.findReplaceDialog.replace_button.clicked.connect(self.replace)
+		self.dialogManager.findReplaceDialog.find_button.clicked.connect(self.find)
 		# Link UI elements to functions
 		for item in self.mainWindow.findChildren(QtGui.QAction): # Menubar action elements
 			try:
@@ -97,7 +100,7 @@ class Controller(QtCore.QObject):
 	def run(self):
 		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
 		outputConsole.clear()
-		
+
 		# Find run args
 		runArgsLine = self.mainWindow.findChild(QtGui.QLineEdit, 'runArgs')
 		runArgs = runArgsLine.text()
@@ -110,7 +113,7 @@ class Controller(QtCore.QObject):
 		executableName = str(currFile.file_path) + ""
 		executableName = executableName.replace(filedir + '/', "")
 		executableName = executableName.split('.')[0]
-		self.executionManager.run(filedir, "./" + executableName, str(runArgs))
+		self.executionManager.run(filedir, "./" + executableName, "")
 		return
 
 	def stop(self):
@@ -139,9 +142,6 @@ class Controller(QtCore.QObject):
 			#outputConsole.append('<font color="blue"><i>' + inputLine + '</i></font>')
 
 			self.executionManager.writeDataToProcess(str(inputLine) + '\n')
-
-
-
 
 	def on_button_stop(self,checked):
 		self.stop()
@@ -175,18 +175,20 @@ class Controller(QtCore.QObject):
 	####################################################################
 	def on_actionNew_File(self,checked):
 		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
-			newFileName='ted.h'#open a dialog to get the file name
-			if newFileName != "" and newFileName != None:
-				for filename in os.listdir(self.fileManager.projectPath):
-					if newFileName == filename:
-						#A file by that name already exists
-						#overwrite reject or prompt
-						return	
-				fullname=self.fileManager.projectPath+"/"+newFileName
-				newEditor=self.openFile(fullname)
-				newEditor.save()
+			self.dialogManager.newFileDialog.open()
 		return
-		
+	def on_new_file_accepted(self):
+		newFileName = self.dialogManager.newFileDialog.textValue()
+		if newFileName != "" and newFileName != None:
+			for filename in os.listdir(self.fileManager.projectPath):
+				if newFileName == filename:
+					#A file by that name already exists
+					#overwrite reject or prompt
+					return	
+			fullname=self.fileManager.projectPath+"/"+newFileName
+			newEditor=self.openFile(fullname)
+			newEditor.save()
+		return	
 	#To be changed to Import File	
 	def on_actionOpen_File(self,checked):
 		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
@@ -200,26 +202,30 @@ class Controller(QtCore.QObject):
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 
 		current_tab.save()
+		#print success in output pane
 		return
 		
 	def on_actionSave_As(self,checked):
 		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
-			newFileName='jenny.c'#open a dialog to get the file name
-			if newFileName != "" and newFileName != None:
-				for filename in os.listdir(self.fileManager.projectPath):
-					if newFileName == filename:
-						#A file by that name already exists
-						#overwrite reject or prompt
-						return				
-			tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-			current_tab = tabWidget.currentWidget() 
-			index = tabWidget.indexOf(current_tab)
-			newTab=self.openFile(current_tab.file_path)
-			newTab.save()
-			current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=newFileName)
-			tabWidget.setTabText(index,newFileName)
-			return
-		
+			self.dialogManager.saveAsDialog.open()
+		return
+	def on_save_As_file_accepted(self):
+		newFileName = self.dialogManager.saveAsDialog.textValue()
+		if newFileName != "" and newFileName != None:
+			for filename in os.listdir(self.fileManager.projectPath):
+				if newFileName == filename:
+					#A file by that name already exists
+					#overwrite reject or prompt
+					return				
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 
+		index = tabWidget.indexOf(current_tab)
+		newTab=self.openFile(current_tab.file_path)
+		newTab.save()
+		current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=newFileName)
+		tabWidget.setTabText(index,newFileName)
+		return	
+
 	def on_actionSave_All(self,checked):
 		for projectFile in self.fileManager.files:
 			projectFile.save()
@@ -255,7 +261,13 @@ class Controller(QtCore.QObject):
 			#maybe give feedback
 			pass
 		return	
-		
+	def on_actionDelete_File():
+		pass
+		#tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		#current_tab = tabWidget.currentWidget()
+		#prompt are you sure?
+		#os.
+	
 	def on_actionClose_Project(self,checked):
 		for projectFile in self.fileManager.files:
 			self.closeFile(projectFile)
@@ -339,18 +351,21 @@ class Controller(QtCore.QObject):
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 		
 		if current_tab is not None:
-			self.DialogManager.findReplaceDialog.open()
+			self.dialogManager.findReplaceDialog.open()
 
 	# Replace All
-	def replace_all(self, check_states, search_for, replace_with):
+	def replace_all(self):
+
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 
 		if current_tab is not None:
-
+			check_states=self.dialogManager.findReplaceDialog.get_check_states()
+			search_for=self.dialogManager.findReplaceDialog.search_for_text.text()
+			replace_with=self.dialogManager.findReplaceDialog.replace_with_text.text()
 			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
 
 			if current_tab.current_search_selection != search_description_tup:
-				self.find(check_states, search_for)
+				self.find()
 
 			while current_tab.current_search_selection == search_description_tup:
 				current_tab.replace(replace_with)
@@ -359,10 +374,13 @@ class Controller(QtCore.QObject):
 
 				current_tab.setCursorPosition(selection_end_row, selection_end_col)
 
-				self.find(check_states, search_for)
+				self.find()
 
 	# Replace
-	def replace(self, check_states, search_for, replace_with):
+	def replace(self):
+		check_states=self.dialogManager.findReplaceDialog.get_check_states()
+		search_for=self.dialogManager.findReplaceDialog.search_for_text.text()
+		replace_with=self.dialogManager.findReplaceDialog.replace_with_text.text()
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget()
 		if current_tab is not None:
@@ -370,7 +388,7 @@ class Controller(QtCore.QObject):
 			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
 
 			if current_tab.current_search_selection != search_description_tup:
-				self.find(check_states, search_for)
+				self.find()
 
 			if current_tab.current_search_selection == search_description_tup:
 				current_tab.replace(replace_with)
@@ -379,10 +397,12 @@ class Controller(QtCore.QObject):
 
 				current_tab.setCursorPosition(selection_end_row, selection_end_col)
 
-				self.find(check_states, search_for)
+				self.find()
 
 	# Find
-	def find(self, check_states, search_for):
+	def find(self):
+		check_states=self.dialogManager.findReplaceDialog.get_check_states()
+		search_for=self.dialogManager.findReplaceDialog.search_for_text.text()
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget()
 		if current_tab is not None:
