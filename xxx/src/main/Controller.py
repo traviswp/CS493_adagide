@@ -98,23 +98,32 @@ class Controller(QtCore.QObject):
 		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
 		outputConsole.clear()
 		
+		# Find run args
+		runArgsLine = self.mainWindow.findChild(QtGui.QLineEdit, 'runArgs')
+		runArgs = runArgsLine.text()
+		runArgsLine.clear()
+		
+		# Run executable
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		currFile = tabWidget.currentWidget()
 		filedir = os.path.dirname(str(currFile.file_path))
 		executableName = str(currFile.file_path) + ""
 		executableName = executableName.replace(filedir + '/', "")
 		executableName = executableName.split('.')[0]
-		self.executionManager.run(filedir, "./" + executableName, "")
+		self.executionManager.run(filedir, "./" + executableName, str(runArgs))
 		return
 
 	def stop(self):
 		self.executionManager.stop()
 		return
 
-	def displayOutput(self,outBuffer,fontFormatHTML=None):
-		if fontFormatHTML != None:
+	def displayOutput(self,outBuffer,HTMLtags=None,HTMLclosingtags=None):
+		if HTMLtags != None:
 			outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
-			outputConsole.append(fontFormatHTML + outBuffer + '</font>')
+			if HTMLclosingtags != None:
+				outputConsole.append(HTMLtags + outBuffer + HTMLclosingtags)
+			else:
+				outputConsole.append(HTMLtags + outBuffer + '</font>')
 		else:
 			outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
 			outputConsole.append(outBuffer)
@@ -126,7 +135,8 @@ class Controller(QtCore.QObject):
 			inputTextBox.clear()
 
 			outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
-			outputConsole.append('<font color="blue">' + inputLine + '</font>')
+			self.displayOutput(inputLine,'<font color="blue"><i>','</i></font>')
+			#outputConsole.append('<font color="blue"><i>' + inputLine + '</i></font>')
 
 			self.executionManager.writeDataToProcess(str(inputLine) + '\n')
 
@@ -134,6 +144,10 @@ class Controller(QtCore.QObject):
 
 
 	def on_button_stop(self,checked):
+		self.stop()
+		return
+		
+	def on_actionStop(self,checked):
 		self.stop()
 		return
 		
