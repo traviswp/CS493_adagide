@@ -70,7 +70,7 @@
 Finished (probably)
 -------------------
 
-1--Undo/Redo/Cut/Copy/Paste*** (already enabled?) (t.p.)
+1--Undo/Redo/Cut/Copy/Paste*** (already enabled?) (dirty t.p.)
 
 
 

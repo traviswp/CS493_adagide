@@ -111,6 +111,10 @@ class ExecutionManager():
 	
 	def writeDataToProcess(self, data):
 		self.process.writeData(data)
+		
+	def stop(self):
+		self.process.kill()
+		return;
 
 		# TODO kill old processes
 
