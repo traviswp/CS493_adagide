@@ -9,5 +9,5 @@ getline(cin, input, '\n');
 cout<<"you entered:\n" << input << "\n";
 //cout<<"hello world!\n";
 }
-return 0
+return 0;
 }

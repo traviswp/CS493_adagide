@@ -1,9 +1,7 @@
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from PyQt4 import Qsci
-
 import sys
-
 from MainWindow import Ui_MainWindow
 from FileManager import FileManager
 from ExecutionManager import ExecutionManager
@@ -97,6 +95,9 @@ class Controller(QtCore.QObject):
 		return
 
 	def run(self):
+		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
+		outputConsole.clear()
+		
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		currFile = tabWidget.currentWidget()
 		filedir = os.path.dirname(str(currFile.file_path))
@@ -107,6 +108,7 @@ class Controller(QtCore.QObject):
 		return
 
 	def stop(self):
+		self.executionManager.stop()
 		return
 
 	def displayOutput(self,outBuffer,fontFormatHTML=None):
@@ -131,6 +133,10 @@ class Controller(QtCore.QObject):
 
 
 
+	def on_button_stop(self,checked):
+		self.stop()
+		return
+		
 	def on_button_enter(self,checked):
 		self.enter();
 		return
