@@ -1,10 +1,6 @@
 ----------
  Michael
 ----------
-1--Delete File(disabled until a file is open)
-
-
-
 3-Themes for .UI
 3-HotKeys
 
@@ -62,12 +58,12 @@ Finished (probably)
 1--Undo/Redo/Cut/Copy/Paste*** (already enabled?) (dirty t.p.)
 
 
-
 1--New Project (creates a folder and sets the context to that folder)
 1--Open Project (opens all the files in a specified folder)(closes any curently open project and its files)
 
 1--New File (creates a new file in the current project directory) (disabled until a project is open)(asks for file name)
 1--Open File (opens a file so long as it is in the project directory) (disabled until a project is open)
+1--Delete File(disabled until a file is open)
 1--Save (overwrites the file on disk with the current contents)
 2--Save As (overwrites/creates new file with the current contents)
 2--Save All (saves all modified files)
