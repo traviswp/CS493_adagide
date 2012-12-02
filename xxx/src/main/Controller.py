@@ -195,6 +195,7 @@ class Controller(QtCore.QObject):
 			newEditor.save()
 			#say created successfully
 			self.displayOutput('#File, '+ str(newEditor.filename)+', was created succesfully.','<font color="green">','</font>')
+			self.setFileControls()
 		return	
 		
 	#To be changed to Import File	
@@ -206,6 +207,7 @@ class Controller(QtCore.QObject):
 				newEditor.setFile(newDirectory=self.fileManager.projectPath,newName=newEditor.filename)
 				#say import succesful
 				self.displayOutput('#File, '+ str(newEditor.filename)+', was imported succesfully.','<font color="green">','</font>')
+				self.setFileControls()
 		return
 		
 	def on_actionSave(self,checked):
@@ -239,6 +241,7 @@ class Controller(QtCore.QObject):
 		tabWidget.setCurrentIndex(tabWidget.indexOf(current_tab))
 		#say created successfully
 		self.displayOutput('#File, '+ str(newFileName)+', was created succesfully.','<font color="green">','</font>')
+		self.setFileControls()
 		return	
 
 	def on_actionSave_All(self,checked):
@@ -269,7 +272,8 @@ class Controller(QtCore.QObject):
 			self.fileManager.set(str(dirPath))
 			#say success
 			self.displayOutput('#Project , '+ self.fileManager.projectName+', was created succesfully.','<font color="green">','</font>')
-			self.enableFileControls()
+			self.enableProjectControls()
+			self.setFileControls()
 		return		
 		
 	def on_actionOpen_Project(self,checked):
@@ -284,12 +288,13 @@ class Controller(QtCore.QObject):
 					self.openFile(dirPath +'/'+ filename)
 			#say project open successfully
 			self.displayOutput('#Project , '+ self.fileManager.projectName+', was opened succesfully.','<font color="green">','</font>')
-			self.enableFileControls()
+			self.enableProjectControls()
+			self.setFileControls()
 		return	
 	def on_actionDelete_File(self,checked):
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 
-		if current_tab == 0:
+		if current_tab != 0:
 			index = tabWidget.indexOf(current_tab)
 			reply = QtGui.QMessageBox.warning(self.mainWindow, 'Delete this File?',
 				"Are you sure you want to delete "+current_tab.filename, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
@@ -298,10 +303,11 @@ class Controller(QtCore.QObject):
 				tabWidget.removeTab(index)
 				current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=current_tab.filename+'.bak')
 				current_tab.close();
-				os.remove(str(current_tab.file_path))
 				self.fileManager.remove(current_tab)
+				os.remove(str(current_tab.file_path))
 				#deletion successful
 				self.displayOutput('#File, '+ file+', was deleted succesfully.','<font color="green">','</font>')
+				self.setFileControls()
 		pass		
 	
 	def on_actionClose_Project(self,checked):
@@ -360,44 +366,52 @@ class Controller(QtCore.QObject):
 		Widget=self.mainWindow.findChild(QtGui.QAction,'actionOpen_File')
 		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
 		Widget.setEnabled(False)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionDelete_File')
-		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
-		Widget.setEnabled(False)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave')
-		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
-		Widget.setEnabled(False)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_All')
-		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
-		Widget.setEnabled(False)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_As')
-		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
-		Widget.setEnabled(False)
 		Widget=self.mainWindow.findChild(QtGui.QAction,'actionClose_Project')
 		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
 		Widget.setEnabled(False)
+		self.setFileControls()
 		return
-	def enableFileControls(self):
+	def enableProjectControls(self):
 		Widget=self.mainWindow.findChild(QtGui.QAction,'actionNew_File')
 		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
 		Widget.setEnabled(True)
 		Widget=self.mainWindow.findChild(QtGui.QAction,'actionOpen_File')
 		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
 		Widget.setEnabled(True)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionDelete_File')
-		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
-		Widget.setEnabled(True)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave')
-		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
-		Widget.setEnabled(True)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_All')
-		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
-		Widget.setEnabled(True)
-		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_As')
-		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
-		Widget.setEnabled(True)
 		Widget=self.mainWindow.findChild(QtGui.QAction,'actionClose_Project')
 		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
 		Widget.setEnabled(True)
+		self.setFileControls()
+		return
+		
+	def setFileControls(self):
+		if self.fileManager.projectOpen:
+			if self.fileManager.count > 0:
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionDelete_File')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_All')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_As')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				return
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionDelete_File')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_All')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_As')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
 		return
 	########################################################################
 
