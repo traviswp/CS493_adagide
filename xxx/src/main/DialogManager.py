@@ -3,12 +3,8 @@ from PyQt4 import QtCore, QtGui, uic
 class DialogManager:
 	def __init__(self,mainWindow):
 		self.newFileDialog=NewFileDialog(mainWindow)
-		self.saveAsDialog=NewFileDialog(mainWindow)
+		self.saveAsDialog=SaveAsFileDialog(mainWindow)
 		self.gotoLineDialog=GotoLineDialog(mainWindow)
-		#comment these next two out when errors occur
-		#self.openProjectDialog=OpenProjectDialog(mainWindow)
-		#self.newProjectDialog=NewProjectDialog(mainWindow)
-		self.confirmDeleteDialog=ConfirmDeleteDialog(mainWindow)
 		self.findReplaceDialog=FindReplaceDialog(mainWindow)
 
 
@@ -20,7 +16,14 @@ class NewFileDialog(QtGui.QInputDialog):
         self.setOkButtonText(QtCore.QString("Create"))
         self.setLabelText(QtCore.QString("Enter the filename:"))
         self.setModal(True)
+class SaveAsFileDialog(QtGui.QInputDialog):
+    def __init__(self, parent):
+        QtGui.QInputDialog.__init__(self, parent)
         
+        self.setInputMode(QtGui.QInputDialog.TextInput)
+        self.setOkButtonText(QtCore.QString("Save"))
+        self.setLabelText(QtCore.QString("Enter the filename:"))
+        self.setModal(True)       
 class GotoLineDialog(QtGui.QInputDialog):
     def __init__(self, parent):
         QtGui.QInputDialog.__init__(self, parent)
@@ -45,7 +48,7 @@ class NewProjectDialog(QtGui.QFileDialog):
         self.setAcceptMode(QtGui.QFileDialog.AcceptSave)
         self.setOption(QtGui.QFileDialog.DontUseNativeDialog, True)
         self.setModal(True)
-        
+'''       
 class ConfirmDeleteDialog(QtGui.QMessageBox):
     def __init__(self, parent):
         QtGui.QMessageBox.__init__(self, parent)
@@ -60,7 +63,7 @@ class ConfirmDeleteDialog(QtGui.QMessageBox):
             return True
         else:
             return False
-     
+    
 class UnsavedFilesDialog(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
@@ -107,7 +110,7 @@ class UnsavedFilesDialog(QtGui.QDialog):
             self.save_and_close.setText("Save Selected and Close")
         else:
             self.save_and_close.setText("Discarding All and Close")
-    
+'''    
 class AboutDialog(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
@@ -126,17 +129,13 @@ class FindReplaceDialog(QtGui.QDialog):
 
 	def __init__(self, parent):
 		QtGui.QDialog.__init__(self, parent)
-
 		# Set up the user interface from .ui file
 		path = "../../resources/ui/"
 		uic.loadUi(path+"FindReplaceDialog.ui", self)
-
 		self.setModal(False)
-
 	def get_check_states(self):
 		"Get a dictionary of the states of the check boxes."
 		check_states = {}
-
 		check_states['match case'] = self.match_case_checkbox.isChecked()
 		check_states['match entire word'] = self.match_entire_word_checkbox.isChecked()
 		check_states['search backward'] = self.search_backward_checkbox.isChecked()

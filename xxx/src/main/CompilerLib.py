@@ -22,7 +22,6 @@ class ClangCompiler():
 
 		# default arguments
 		executableName = os.path.dirname(str(files[0])) + "/" + executableName
-		
 		args = ["-g", "-Wall", "-o", executableName]
 
 		# concatenate default args & the list of files

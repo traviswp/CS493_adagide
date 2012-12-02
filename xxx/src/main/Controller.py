@@ -3,7 +3,7 @@ from PyQt4 import QtGui
 from PyQt4 import Qsci
 import sys
 from MainWindow import Ui_MainWindow
-from FileManager import FileManager
+from FileManager import *
 from ExecutionManager import ExecutionManager
 from BuildManager import BuildManager
 from EditorPane import *
@@ -39,6 +39,8 @@ class Controller(QtCore.QObject):
 		self.dialogManager.findReplaceDialog.replace_all_button.clicked.connect(self.replace_all)
 		self.dialogManager.findReplaceDialog.replace_button.clicked.connect(self.replace)
 		self.dialogManager.findReplaceDialog.find_button.clicked.connect(self.find)
+		#overriding standard exit behavior hideous hack?
+		self.mainWindow.closeEvent=self.on_exit
 		# Link UI elements to functions
 		for item in self.mainWindow.findChildren(QtGui.QAction): # Menubar action elements
 			try:
@@ -62,7 +64,9 @@ class Controller(QtCore.QObject):
 		
 		inputTextBox = self.mainWindow.findChild(QtGui.QLineEdit, 'stdinTextBox');
 		inputTextBox.returnPressed.connect(self.enter);
-
+		self.disableProjectControls()
+		
+		
 	# Put all basic class functions here
 	def build(self):
 
@@ -130,7 +134,7 @@ class Controller(QtCore.QObject):
 		else:
 			outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
 			outputConsole.append(outBuffer)
-
+	
 	def enter(self):
 		if self.executionManager.process.state() == 2: # 0->not running, 1->starting, 2->running
 			inputTextBox = self.mainWindow.findChild(QtGui.QLineEdit, 'stdinTextBox')
@@ -182,13 +186,17 @@ class Controller(QtCore.QObject):
 		if newFileName != "" and newFileName != None:
 			for filename in os.listdir(self.fileManager.projectPath):
 				if newFileName == filename:
-					#A file by that name already exists
-					#overwrite reject or prompt
+					reply = QtGui.QMessageBox.warning(self.mainWindow, 'Make a New File',"The file "+filename+" already exists.\n Enter another name?", QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+					if reply == QtGui.QMessageBox.Ok:
+						self.on_actionNew_File(False)
 					return	
 			fullname=self.fileManager.projectPath+"/"+newFileName
 			newEditor=self.openFile(fullname)
 			newEditor.save()
+			#say created successfully
+			self.displayOutput('#File, '+ str(newEditor.filename)+', was created succesfully.','<font color="green">','</font>')
 		return	
+		
 	#To be changed to Import File	
 	def on_actionOpen_File(self,checked):
 		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
@@ -196,13 +204,16 @@ class Controller(QtCore.QObject):
 			if fullname != "" and fullname != None:
 				newEditor=self.openFile(fullname)
 				newEditor.setFile(newDirectory=self.fileManager.projectPath,newName=newEditor.filename)
+				#say import succesful
+				self.displayOutput('#File, '+ str(newEditor.filename)+', was imported succesfully.','<font color="green">','</font>')
 		return
 		
 	def on_actionSave(self,checked):
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 
 		current_tab.save()
-		#print success in output pane
+		#say save success in output pane
+		self.displayOutput('#File, '+ str(current_tab.filename)+', was saved succesfully.','<font color="green">','</font>')
 		return
 		
 	def on_actionSave_As(self,checked):
@@ -214,8 +225,9 @@ class Controller(QtCore.QObject):
 		if newFileName != "" and newFileName != None:
 			for filename in os.listdir(self.fileManager.projectPath):
 				if newFileName == filename:
-					#A file by that name already exists
-					#overwrite reject or prompt
+					reply = QtGui.QMessageBox.warning(self.mainWindow, 'Save as New',"The file "+filename+" already exists.\n Enter another name?", QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+					if reply == QtGui.QMessageBox.Ok:
+						self.on_actionSave_As(False)
 					return				
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 
@@ -224,70 +236,108 @@ class Controller(QtCore.QObject):
 		newTab.save()
 		current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=newFileName)
 		tabWidget.setTabText(index,newFileName)
+		tabWidget.setCurrentIndex(tabWidget.indexOf(current_tab))
+		#say created successfully
+		self.displayOutput('#File, '+ str(newFileName)+', was created succesfully.','<font color="green">','</font>')
 		return	
 
 	def on_actionSave_All(self,checked):
 		for projectFile in self.fileManager.files:
 			projectFile.save()
+			#say saved successfully
+			self.displayOutput('#File, '+ str(projectFile.filename)+', was saved succesfully.','<font color="green">','</font>')
 		return	
 		
 	def on_actionNewProject(self,checked):
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.clear()
 		self.on_actionClose_Project(checked)
 		dirPath = str(QtGui.QFileDialog.getSaveFileName(parent = self.mainWindow, caption='Create A New Project', directory='./'))
 		if(dirPath != ""):
 			if os.path.exists(dirPath):
-				self.statusMessage.emit("The selected project name already exists. Either choose a different one, or use open to open the existing project.")
+				reply = QtGui.QMessageBox.warning(self.mainWindow, 'Make a New Project',"The directory "+filename+" already exists.\n Select another Directory?", QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+				if reply == QtGui.QMessageBox.Ok:
+					self.on_actionNewProject(False)
 				return
 			else:
 				os.makedirs(dirPath)
 			if not os.path.exists(dirPath):
-				self.statusMessage.emit("There was an error creating the project. Check permissions.")
+				QtGui.QMessageBox.Critical(self.mainWindow, 'ERROR',"Directory creation unsuccessful", QtGui.QMessageBox.Ok)
+				#say there was an error
+				self.displayOutput('#Project creation encountered an error.','<font color="red">','</font>')
 				return
-			self.fileManager.projectPath = str(dirPath)
-		else:
-			#maybe give feedback
-			pass
+			self.fileManager.set(str(dirPath))
+			#say success
+			self.displayOutput('#Project , '+ self.fileManager.projectName+', was created succesfully.','<font color="green">','</font>')
+			self.enableFileControls()
 		return		
 		
 	def on_actionOpen_Project(self,checked):
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.clear()
 		self.on_actionClose_Project(checked)
 		dirPath = str(QtGui.QFileDialog.getExistingDirectory(parent = self.mainWindow, caption='Open An Existing Project', directory='./'))
 		if(dirPath != ""):
-			self.fileManager.projectPath = dirPath
+			self.fileManager.set(str(dirPath))
 			for filename in os.listdir(dirPath):
 				if fnmatch.fnmatch(filename, '*.c') or fnmatch.fnmatch(filename, '*.h') or fnmatch.fnmatch(filename, '*.cpp') or fnmatch.fnmatch(filename, '*.cxx') or fnmatch.fnmatch(filename, '*.txt'):
-					self.openFile(dirPath +'/'+ filename)     
-		else:
-			#maybe give feedback
-			pass
+					self.openFile(dirPath +'/'+ filename)
+			#say project open successfully
+			self.displayOutput('#Project , '+ self.fileManager.projectName+', was opened succesfully.','<font color="green">','</font>')
+			self.enableFileControls()
 		return	
-	def on_actionDelete_File():
-		pass
-		#tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		#current_tab = tabWidget.currentWidget()
-		#prompt are you sure?
-		#os.
+	def on_actionDelete_File(self,checked):
+		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 
+		if current_tab == 0:
+			index = tabWidget.indexOf(current_tab)
+			reply = QtGui.QMessageBox.warning(self.mainWindow, 'Delete this File?',
+				"Are you sure you want to delete "+current_tab.filename, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+			if reply == QtGui.QMessageBox.Yes:
+				file=current_tab.filename
+				tabWidget.removeTab(index)
+				current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=current_tab.filename+'.bak')
+				current_tab.close();
+				os.remove(str(current_tab.file_path))
+				self.fileManager.remove(current_tab)
+				#deletion successful
+				self.displayOutput('#File, '+ file+', was deleted succesfully.','<font color="green">','</font>')
+		pass		
 	
 	def on_actionClose_Project(self,checked):
+		#stop any running process
+		self.stop()
+		#close each open file
 		for projectFile in self.fileManager.files:
 			self.closeFile(projectFile)
-		self.fileManager.files=[]
-		self.fileManager.projectOpen=False
-		self.fileManager.projectPath=None
-		self.count=0
+		#reset the fleManager
+		self.fileManager.reset()
+		self.disableProjectControls()
 		return		
-
+		
+	#this is called when a user press the 'X' button to quit
+	def on_exit(self,event):
+		self.on_actionQuit(False)
+		event.ignore()
+		
 	def on_actionQuit(self,checked):
-		self.on_actionClose_Project(checked)
-		sys.exit(0)
+		reply = QtGui.QMessageBox.question(self.mainWindow, 'Please Confirm',
+            "Are you sure to quit?", QtGui.QMessageBox.Yes | 
+            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+		if reply == QtGui.QMessageBox.Yes:
+			self.on_actionClose_Project(checked)
+			sys.exit(0)
 		pass
 
 	def closeFile(self,projectFile):
 		#will this need to run on a seperate thread?
 		if projectFile.isModified() == True:
-			print 'got it!'
-			#prompt for save
-			#save or do not
+			reply = QtGui.QMessageBox.question(self.mainWindow, 'Save this File?',
+            "Would you like to save your changes to "+projectFile.filename, QtGui.QMessageBox.Yes | 
+            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+			if reply == QtGui.QMessageBox.Yes:
+				projectFile.save()
+				#saved successfully
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.removeTab(tabWidget.indexOf(projectFile));
 		return
@@ -297,11 +347,58 @@ class Controller(QtCore.QObject):
 		fname=str(projectFile)+""
 		fname=fname.replace(fpath+'/',"")
 		newEditorPane=ProjectFile(fname,projectFile)
-		self.fileManager.files.append(newEditorPane)
+		self.fileManager.add(newEditorPane)
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
+		tabWidget.setCurrentIndex(tabWidget.indexOf(newEditorPane))
 		return newEditorPane
 
+	def disableProjectControls(self):
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionNew_File')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionOpen_File')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionDelete_File')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_All')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_As')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionClose_Project')
+		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
+		Widget.setEnabled(False)
+		return
+	def enableFileControls(self):
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionNew_File')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(True)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionOpen_File')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(True)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionDelete_File')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(True)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(True)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_All')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(True)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSave_As')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(True)
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionClose_Project')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(True)
+		return
 	########################################################################
 
 	# Undo
