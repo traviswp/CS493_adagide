@@ -128,11 +128,19 @@ class FindReplaceDialog(QtGui.QDialog):
 	#find = QtCore.pyqtSignal(dict, str)
 
 	def __init__(self, parent):
+
 		QtGui.QDialog.__init__(self, parent)
+
 		# Set up the user interface from .ui file
 		path = "../../resources/ui/"
 		uic.loadUi(path+"FindReplaceDialog.ui", self)
+		
+		# Don't set this dialog as modal
 		self.setModal(False)
+
+		# Raise window to always be at the front
+		self.raise_()
+
 	def get_check_states(self):
 		"Get a dictionary of the states of the check boxes."
 		check_states = {}
