@@ -105,9 +105,16 @@ class ExecutionManager():
 
 	def run(self, filedir, filename, arg_string):
 		self.clear()
-		args = shlex.split(arg_string)
-		self.process.setWorkingDirectory(filedir)
-		self.process.start(QtCore.QString(filename), QtCore.QStringList(args))
+		if os.name != "posix":
+			filename=filename.replace("./","\\")
+			arg_string=filedir+filename+" "+arg_string
+			#args = shlex.split(arg_string)
+			self.process.start(QtCore.QString(cmd.exe))
+			self.process.writeData(arg_string)
+		else:
+			args = shlex.split(arg_string)
+			self.process.setWorkingDirectory(filedir)
+			self.process.start(QtCore.QString(filename), QtCore.QStringList(args))
 	
 	def writeDataToProcess(self, data):
 		self.process.writeData(data)

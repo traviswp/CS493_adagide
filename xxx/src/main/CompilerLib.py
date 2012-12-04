@@ -34,8 +34,10 @@ class ClangCompiler():
 		args.extend(files)
 
 		# call the clang compiler with the specified argsf
-		process.start(QtCore.QString("clang++"), QtCore.QStringList(args))
-
+		if os.name == "posix":
+			process.start(QtCore.QString("clang++"), QtCore.QStringList(args))
+		else:
+			process.start(QtCore.QString("g++"), QtCore.QStringList(args))
 	#
 	# Determines if a line is a clang error message
 	#
