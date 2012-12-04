@@ -37,8 +37,7 @@
 
 -Edit
 3--Reformat (rewrites the file with consistent white-space)
-1--Find Replace and its dialog
-1--GotoLine (set the current panes cursor to the specified line and centers view)
+1--Find Replace and its dialog (fix infinite find all issue)
 
 1-Help
 1--about(write a help text / program documentation)
@@ -56,7 +55,7 @@ Finished (probably)
 -------------------
 
 1--Undo/Redo/Cut/Copy/Paste*** (already enabled?) (dirty t.p.)
-
+1--GotoLine (set the current panes cursor to the specified line and centers view)
 
 1--New Project (creates a folder and sets the context to that folder)
 1--Open Project (opens all the files in a specified folder)(closes any curently open project and its files)
