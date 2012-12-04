@@ -26,6 +26,8 @@ class ExecutionManager():
 
 	def __init__(self, controller):
 
+		self.running = False
+		
 		# execution output buffer
 		self.buffer = ""
 
@@ -104,6 +106,7 @@ class ExecutionManager():
 	#
 
 	def run(self, filedir, filename, arg_string):
+		self.running = True
 		self.clear()
 		args = shlex.split(arg_string)
 		self.process.setWorkingDirectory(filedir)
@@ -114,6 +117,7 @@ class ExecutionManager():
 		
 	def stop(self):
 		self.process.kill()
+		self.running = False
 		return;
 
 		# TODO kill old processes

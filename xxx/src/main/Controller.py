@@ -103,21 +103,25 @@ class Controller(QtCore.QObject):
 
 	def run(self):
 		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
-		outputConsole.clear()
+		if self.executionManager.running:
+			self.displayOutput("Error: program already running. Press 'Stop' first.",
+							"<font color=red>", "</font>")
+		else:
+			outputConsole.clear()
 
-		# Find run args
-		runArgsLine = self.mainWindow.findChild(QtGui.QLineEdit, 'runArgs')
-		runArgs = runArgsLine.text()
-		runArgsLine.clear()
-		
-		# Run executable
-		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		currFile = tabWidget.currentWidget()
-		filedir = os.path.dirname(str(currFile.file_path))
-		executableName = str(currFile.file_path) + ""
-		executableName = executableName.replace(filedir + '/', "")
-		executableName = executableName.split('.')[0]
-		self.executionManager.run(filedir, "./" + executableName, "")
+			# Find run args
+			runArgsLine = self.mainWindow.findChild(QtGui.QLineEdit, 'runArgs')
+			runArgs = runArgsLine.text()
+			runArgsLine.clear()
+			
+			# Run executable
+			tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+			currFile = tabWidget.currentWidget()
+			filedir = os.path.dirname(str(currFile.file_path))
+			executableName = str(currFile.file_path) + ""
+			executableName = executableName.replace(filedir + '/', "")
+			executableName = executableName.split('.')[0]
+			self.executionManager.run(filedir, "./" + executableName, "")
 		return
 
 	def stop(self):
