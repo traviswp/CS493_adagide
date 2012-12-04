@@ -24,6 +24,7 @@ class SaveAsFileDialog(QtGui.QInputDialog):
         self.setOkButtonText(QtCore.QString("Save"))
         self.setLabelText(QtCore.QString("Enter the filename:"))
         self.setModal(True)       
+
 class GotoLineDialog(QtGui.QInputDialog):
     def __init__(self, parent):
         QtGui.QInputDialog.__init__(self, parent)

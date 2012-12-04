@@ -19,26 +19,36 @@ class Controller(QtCore.QObject):
 
 	def __init__(self, mainWindow, debugMode=False):
 		QtCore.QObject.__init__(self)
+
 		# Prints angry debug messages, if activated
 		self.debugMode = debugMode
+
 		# Register mainWindow object
 		self.mainWindow = mainWindow
+
 		# Create/initialize other objects
 		self.fileManager = FileManager()
 		self.executionManager = ExecutionManager(self)
 		self.buildManager = BuildManager(self)
 		self.dialogManager = DialogManager(self.mainWindow)
+
 		# Connect signals from newFileDialog and saveAsDialog to controller methods
 		self.dialogManager.newFileDialog.accepted.connect(self.on_new_file_accepted)
 		self.dialogManager.saveAsDialog.accepted.connect(self.on_save_As_file_accepted)
+
 		# HACK: get the current tab which contains the file to delete
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.removeTab(1)
+
 		#connect find replace dialog buttons to there methods
 		self.dialogManager.findReplaceDialog.close_button.clicked.connect(self.dialogManager.findReplaceDialog.hide)
 		self.dialogManager.findReplaceDialog.replace_all_button.clicked.connect(self.replace_all)
 		self.dialogManager.findReplaceDialog.replace_button.clicked.connect(self.replace)
 		self.dialogManager.findReplaceDialog.find_button.clicked.connect(self.find)
+
+		#connect goto line dialog buttons to appropriate method(s)
+		self.dialogManager.gotoLineDialog.accepted.connect(self.on_actionGoto_line_accepted)
+
 		#overriding standard exit behavior hideous hack?
 		self.mainWindow.closeEvent=self.on_exit
 		# Link UI elements to functions
@@ -487,14 +497,38 @@ class Controller(QtCore.QObject):
 			if current_tab.current_search_selection != search_description_tup:
 				self.find()
 
+			# tracking variables for replace_all loop
+			start_row, start_col = current_tab.getCursorPosition()
+			wrapped = False
+
+			# replace all occurences of search_for with replace_with
 			while current_tab.current_search_selection == search_description_tup:
+
+				# replace the found word
 				current_tab.replace(replace_with)
 
 				selection_start_row, selection_start_col, selection_end_row, selection_end_col = current_tab.getSelection()
 
+				# set the new cursor position
 				current_tab.setCursorPosition(selection_end_row, selection_end_col)
 
+				# find any other matches (if any)
 				self.find()
+
+				# determine the next location of the cursor
+				next_pos_row, next_pos_col = current_tab.getCursorPosition()
+				if next_pos_row <= start_row and next_pos_col <= start_col:
+					wrapped = True
+
+				# check: has replace_all wrapped around to the beginning of the file?
+				if wrapped:
+
+					# check: replace_all has covered the entire file
+					if next_pos_row >= start_row and next_pos_col >= start_col:
+						break
+
+			# reset the cursor position
+			current_tab.setCursorPosition(start_row, start_col)
 
 	# Replace
 	def replace(self):
@@ -505,19 +539,23 @@ class Controller(QtCore.QObject):
 		current_tab = tabWidget.currentWidget()
 		if current_tab is not None:
 
-			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
+			check_replace_with = str(replace_with).strip()
 
-			if current_tab.current_search_selection != search_description_tup:
-				self.find()
+			if check_replace_with is not "":
 
-			if current_tab.current_search_selection == search_description_tup:
-				current_tab.replace(replace_with)
+				search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
 
-				selection_start_row, selection_start_col, selection_end_row, selection_end_col = current_tab.getSelection()
+				if current_tab.current_search_selection != search_description_tup:
+					self.find()
 
-				current_tab.setCursorPosition(selection_end_row, selection_end_col)
+				if current_tab.current_search_selection == search_description_tup:
+					current_tab.replace(replace_with)
 
-				self.find()
+					selection_start_row, selection_start_col, selection_end_row, selection_end_col = current_tab.getSelection()
+
+					current_tab.setCursorPosition(selection_end_row, selection_end_col)
+
+					self.find()
 
 	# Find
 	def find(self):
@@ -543,6 +581,38 @@ class Controller(QtCore.QObject):
 			if was_found:
 				#Set a variable indicating the the current selection is the result of a search.
 				current_tab.current_search_selection = search_description_tup
+
+	########################################################################
+
+	# Goto Accepted
+	def on_actionGoto_line_accepted(self):
+
+		# Get value specified in dialog
+		line = self.dialogManager.gotoLineDialog.intValue() -1
+
+		# Get the current tab
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+
+			# line is unreachable
+			if line > current_tab.lines():	
+				return
+
+			# Set new cursor position
+			current_tab.setCursorPosition(line, 0)
+
+	# Goto
+	def on_actionGoto(self):
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+		if current_tab is not None:
+
+			# Set possible range of lines in the current tab
+			self.dialogManager.gotoLineDialog.setIntRange(0, current_tab.lines())
+
+			# Open the goto line dialog
+			self.dialogManager.gotoLineDialog.open()
 
 	########################################################################
 
