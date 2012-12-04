@@ -72,39 +72,43 @@ class Controller(QtCore.QObject):
 
 		# before displaying the new build, clear the output text box
 		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
-		outputConsole.clear()
-
-		# get the current tab which contains the file to be built
-		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		currFile = tabWidget.currentWidget()
-
-		# get the file(s) to be built
-		files = currFile.file_path
-
-		# set the name of the executable
-		filename = currFile.filename
-		length = len(filename)
-		if (filename[length-4:length] == ".cpp"):
-			executableName = filename[0:length-4]
+		if self.executionManager.running:
+			self.displayOutput("Error: A program is currently running. Press 'Stop' first, and then hit 'Build' again.",
+							"<font color=red>", "</font>")
 		else:
-			# This should never happen if you are trying to build a valid file...
-			# If we get here it means that people are trying to compile non-.cpp
-			# files...
-			executableName = "SIDE.err"
+			outputConsole.clear()
+
+			# get the current tab which contains the file to be built
+			tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+			currFile = tabWidget.currentWidget()
+
+			# get the file(s) to be built
+			files = currFile.file_path
+
+			# set the name of the executable
+			filename = currFile.filename
+			length = len(filename)
+			if (filename[length-4:length] == ".cpp"):
+				executableName = filename[0:length-4]
+			else:
+				# This should never happen if you are trying to build a valid file...
+				# If we get here it means that people are trying to compile non-.cpp
+				# files...
+				executableName = "SIDE.err"
 
 
-		# TODO get the compilation arguments 
-		compileArgs = ""
+			# TODO get the compilation arguments 
+			compileArgs = ""
 
-		# build with parameters defined above
-		self.buildManager.build((files,), executableName, compileArgs)
+			# build with parameters defined above
+			self.buildManager.build((files,), executableName, compileArgs)
 
 		return
 
 	def run(self):
 		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
 		if self.executionManager.running:
-			self.displayOutput("Error: program already running. Press 'Stop' first.",
+			self.displayOutput("Error: A program is already running. Press 'Stop' first, and then hit 'Run' again.",
 							"<font color=red>", "</font>")
 		else:
 			outputConsole.clear()

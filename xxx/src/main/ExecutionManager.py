@@ -60,8 +60,11 @@ class ExecutionManager():
 		self.write(data)
 
 	def on_error(self):
-		#self.write("An error occurred: %s" % str(self.process.error()))
-		self.write('<font color=red>An error occurred: ' + str(self.process.error()) + '</font>')
+		if(self.running):
+			#self.write("An error occurred: %s" % str(self.process.error()))
+			self.write('<font color=red>An error occurred: ' + str(self.process.error()) + '</font>')
+		else:
+			self.write('<font color=red>' + "Stopping program..." + '</font>')
 
 	#
 	# buffer manipulation
