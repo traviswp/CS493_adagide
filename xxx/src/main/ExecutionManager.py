@@ -51,6 +51,7 @@ class ExecutionManager():
 		self.write("[ Program Started ]")
 
 	def on_finished(self):
+		self.running = False
 		self.write("[ Program Terminated ]")
 
 		# call controller method "compilationOutput" to display buffer contents
