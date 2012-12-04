@@ -121,7 +121,7 @@ class Controller(QtCore.QObject):
 			executableName = str(currFile.file_path) + ""
 			executableName = executableName.replace(filedir + '/', "")
 			executableName = executableName.split('.')[0]
-			self.executionManager.run(filedir, "./" + executableName, "")
+			self.executionManager.run(filedir, "./" + executableName, str(runArgs))
 		return
 
 	def stop(self):
