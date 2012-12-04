@@ -466,7 +466,8 @@ class Controller(QtCore.QObject):
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 		
 		if current_tab is not None:
-			self.dialogManager.findReplaceDialog.open()
+			self.dialogManager.findReplaceDialog.show()
+
 
 	# Replace All
 	def replace_all(self):
