@@ -39,6 +39,7 @@
 3--Reformat (rewrites the file with consistent white-space)
 1--Find Replace and its dialog (fix infinite find all issue) (t.p.) 
     **** works, but still has some funny funcionality ***
+1. figure out how to disable buttons until files are open
 
 1-Help
 1--about(write a help text / program documentation) *** Won't work unless we can get the resources file to load... ***
