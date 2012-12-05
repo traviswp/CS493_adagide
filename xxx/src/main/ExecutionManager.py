@@ -111,9 +111,9 @@ class ExecutionManager():
 		if os.name != "posix":
 			filename=filename.replace("./","\\")
 			arg_string=filedir+filename+" "+arg_string
-			#args = shlex.split(arg_string)
-			self.process.start(QtCore.QString(cmd.exe))
-			self.process.writeData(arg_string)
+			args = shlex.split(arg_string)
+			self.process.start(QtCore.QString("WScript.Shell"), QtCore.QStringList(args))
+			#self.writeDataToProcess(arg_string)
 		else:
 			args = shlex.split(arg_string)
 			self.process.setWorkingDirectory(filedir)
