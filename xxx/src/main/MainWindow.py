@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Wed Dec  5 02:28:45 2012
+# Created: Wed Dec  5 15:40:53 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -372,7 +372,7 @@ class Ui_MainWindow(object):
         self.actionStop.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setShortcut(QtGui.QApplication.translate("MainWindow", "F7", None, QtGui.QApplication.UnicodeUTF8))
 
-#import cs140adagide_rc
+import cs140adagide_rc
 
 if __name__ == "__main__":
     import sys
