@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>799</width>
+    <height>494</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>About</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="cs140adagide.qrc">
+    <normaloff>:/icons/theme/about</normaloff>:/icons/theme/about</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTextBrowser" name="textBrowser">
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:20pt; font-weight:600; color:#0000ff;&quot;&gt;S&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;imple  &lt;/span&gt;&lt;span style=&quot; font-size:20pt; font-weight:600; color:#0000ff;&quot;&gt;I&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;ntegrated  &lt;/span&gt;&lt;span style=&quot; font-size:20pt; font-weight:600; color:#0000ff;&quot;&gt;D&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;eveloping  &lt;/span&gt;&lt;span style=&quot; font-size:20pt; font-weight:600; color:#0000ff;&quot;&gt;E&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;nvironment &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-style:italic;&quot;&gt;For C++&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;SIDE&lt;/span&gt;  is a software application designed and built in the 49X series at Western Washington University &lt;span style=&quot; font-style:italic;&quot;&gt;by students, for students&lt;/span&gt;. Primarily intended for students in the Computer Science 140 classes, &lt;span style=&quot; font-style:italic;&quot;&gt;SIDE  &lt;/span&gt;aims to provide flexibility and power in a controlled environment, making development fast, easy, and even fun!&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;SIDE&lt;/span&gt;  is absolutely feature rich, offering you all of the typical functionality of your favorite text editors, while maintaining a clean and simple 'feel'. Find the tools you need, in the places you expect them to be! &lt;span style=&quot; font-style:italic;&quot;&gt;SIDE  &lt;/span&gt;also encorporates features such as a file management structure and a reformatting tool that are intended to help new programmers develop good programming practices.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Also, &lt;span style=&quot; font-style:italic;&quot;&gt;SIDE&lt;/span&gt;'s  user interface (U.I.) was designed with the new programmer in mind. While most developing environments hide useful tools deep inside the menus structure and make them difficult to use, &lt;span style=&quot; font-style:italic;&quot;&gt;SIDE  &lt;/span&gt;has built the most useful tools right into the interface for rapid development. Build, run, interact, and stop your program from the bottom half of our specialized UI. What's that? You don't like clicking buttons? We've got you covered - F5, F6, and F7 will build, run and stop (respectively) your program. &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;For further information on &lt;span style=&quot; font-style:italic;&quot;&gt;SIDE&lt;/span&gt;, visit ____________________ where we post tutorials, screenshots, and basic examples. &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic; color:#0000ff;&quot;&gt;SIDE - putting the &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#0000ff;&quot;&gt;mint&lt;/span&gt;&lt;span style=&quot; font-style:italic; color:#0000ff;&quot;&gt; in rapid develop&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#0000ff;&quot;&gt;ment&lt;/span&gt;&lt;span style=&quot; font-style:italic; color:#0000ff;&quot;&gt; ('cause our stuff is so 'fresh') since 2012&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="source">
+      <url>
+       <string>qrc:/about.html</string>
+      </url>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="cs140adagide.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>489</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>489</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,12 +1,28 @@
 from PyQt4 import QtCore, QtGui, uic
 
 class DialogManager:
-	def __init__(self,mainWindow):
-		self.newFileDialog=NewFileDialog(mainWindow)
-		self.saveAsDialog=SaveAsFileDialog(mainWindow)
-		self.gotoLineDialog=GotoLineDialog(mainWindow)
-		self.findReplaceDialog=FindReplaceDialog(mainWindow)
 
+	"""
+	----------------------------------------------------------------------
+	This class is designed to provide the ability to access all of the  
+	available dialogs which our developing environment supports. This 
+	includes:
+
+	+ NewFileDialog 
+	+ SaveAsDialog
+	+ AboutDialog
+	+ GotoLineDialog
+	+ FindReplaceDialog
+
+	----------------------------------------------------------------------
+	"""
+
+	def __init__(self,mainWindow):
+		self.newFileDialog     = NewFileDialog(mainWindow)
+		self.saveAsDialog      = SaveAsFileDialog(mainWindow)
+		self.aboutDialog       = AboutDialog(mainWindow)
+		self.findReplaceDialog = FindReplaceDialog(mainWindow)
+		self.gotoLineDialog    = GotoLineDialog(mainWindow)
 
 class NewFileDialog(QtGui.QInputDialog):
     def __init__(self, parent):
@@ -24,15 +40,6 @@ class SaveAsFileDialog(QtGui.QInputDialog):
         self.setOkButtonText(QtCore.QString("Save"))
         self.setLabelText(QtCore.QString("Enter the filename:"))
         self.setModal(True)       
-
-class GotoLineDialog(QtGui.QInputDialog):
-    def __init__(self, parent):
-        QtGui.QInputDialog.__init__(self, parent)
-        
-        self.setInputMode(QtGui.QInputDialog.IntInput)
-        self.setOkButtonText(QtCore.QString("Goto"))
-        self.setLabelText(QtCore.QString("Enter the line number:"))
-        self.setModal(True)
         
 class OpenProjectDialog(QtGui.QFileDialog):
     def __init__(self, parent):
@@ -112,28 +119,30 @@ class UnsavedFilesDialog(QtGui.QDialog):
         else:
             self.save_and_close.setText("Discarding All and Close")
 '''    
-class AboutDialog(QtGui.QDialog):
-    def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
 
-        # Set up the user interface from .ui file
-        uic.loadUi("resources/AboutDialog.ui", self)
-        
-        self.accepted.connect(self.hide)
-        
-class FindReplaceDialog(QtGui.QDialog):
-	#the dict is the check states of the four checkboxes
-	#the strings are the text to search for and the text to replace with
-	#replace_all = QtCore.pyqtSignal(dict, str, str)
-	#replace = QtCore.pyqtSignal(dict, str, str)
-	#find = QtCore.pyqtSignal(dict, str)
+class AboutDialog(QtGui.QDialog):
 
 	def __init__(self, parent):
 
 		QtGui.QDialog.__init__(self, parent)
 
 		# Set up the user interface from .ui file
-		path = "../../resources/ui/"
+		path = "../../resources/"
+		uic.loadUi(path+"AboutDialog.ui", self)
+
+		self.accepted.connect(self.hide)
+
+class FindReplaceDialog(QtGui.QDialog):
+
+	# The dict is the check states of the four checkboxes
+	# the strings are the text to search for and the text to replace with
+
+	def __init__(self, parent):
+
+		QtGui.QDialog.__init__(self, parent)
+
+		# Set up the user interface from .ui file
+		path = "../../resources/"
 		uic.loadUi(path+"FindReplaceDialog.ui", self)
 		
 		# Don't set this dialog as modal
@@ -152,16 +161,12 @@ class FindReplaceDialog(QtGui.QDialog):
 
 		return check_states
 
-	#def replace_all_button_clicked(self):
-	#	print "replace all"
-	#	self.replace_all.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
-	#
-	#def replace_button_clicked(self):
-	#	print "replace"
-	#	self.replace.emit(self.get_check_states(), self.search_for_text.text(), self.replace_with_text.text())
+class GotoLineDialog(QtGui.QInputDialog):
 
-	#def find_button_clicked(self):
-	#	print "find"
-	#	self.find.emit(self.get_check_states(), self.search_for_text.text())
+    def __init__(self, parent):
+        QtGui.QInputDialog.__init__(self, parent)
         
-
+        self.setInputMode(QtGui.QInputDialog.IntInput)
+        self.setOkButtonText(QtCore.QString("Goto"))
+        self.setLabelText(QtCore.QString("Enter the line number:"))
+        self.setModal(True)

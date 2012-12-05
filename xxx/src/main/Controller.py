@@ -27,27 +27,34 @@ class Controller(QtCore.QObject):
 		self.mainWindow = mainWindow
 
 		# Create/initialize other objects
-		self.fileManager = FileManager()
+		self.fileManager      = FileManager()
 		self.executionManager = ExecutionManager(self)
-		self.buildManager = BuildManager(self)
-		self.dialogManager = DialogManager(self.mainWindow)
+		self.buildManager     = BuildManager(self)
+		self.dialogManager    = DialogManager(self.mainWindow)
 
 		# Connect signals from newFileDialog and saveAsDialog to controller methods
 		self.dialogManager.newFileDialog.accepted.connect(self.on_new_file_accepted)
 		self.dialogManager.saveAsDialog.accepted.connect(self.on_save_As_file_accepted)
 
-		# HACK: get the current tab which contains the file to delete
-		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		tabWidget.removeTab(1)
+		# Connect about dialog button(s) to appropriate handler method(s)
+		#self.dialogManager.aboutDialog.accepted
 
-		#connect find replace dialog buttons to there methods
+		# Connect find replace dialog button(s) to there handler method(s)
 		self.dialogManager.findReplaceDialog.close_button.clicked.connect(self.dialogManager.findReplaceDialog.hide)
 		self.dialogManager.findReplaceDialog.replace_all_button.clicked.connect(self.replace_all)
 		self.dialogManager.findReplaceDialog.replace_button.clicked.connect(self.replace)
 		self.dialogManager.findReplaceDialog.find_button.clicked.connect(self.find)
 
-		#connect goto line dialog buttons to appropriate method(s)
+		# Connect goto line dialog buttons(s) to appropriate handler method(s)
 		self.dialogManager.gotoLineDialog.accepted.connect(self.on_actionGoto_line_accepted)
+
+
+		######################################################################
+		# HACK: get the current tab which contains the file to delete
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tabWidget.removeTab(1)
+		######################################################################
+
 
 		#overriding standard exit behavior hideous hack?
 		self.mainWindow.closeEvent=self.on_exit
@@ -192,6 +199,7 @@ class Controller(QtCore.QObject):
 	def on_button_run(self,checked):
 		self.run()
 		return
+
 	####################################################################
 	# File Controls                                                    #
 	####################################################################
@@ -431,7 +439,10 @@ class Controller(QtCore.QObject):
 		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
 		Widget.setEnabled(False)
 		return
-	########################################################################
+
+	#
+	# Edit Menu Features (Handlers)
+	#
 
 	# Undo
 	def on_actionUndo(self,checked):
@@ -446,6 +457,8 @@ class Controller(QtCore.QObject):
 		current_tab = tabWidget.currentWidget() 		
 		if current_tab is not None:
 			current_tab.redo()
+
+					########################################
 
 	# Cut
 	def on_actionCut(self,checked):
@@ -475,7 +488,9 @@ class Controller(QtCore.QObject):
 		if current_tab is not None:
 			current_tab.selectAll()
 
-	# Find & Replace
+					########################################
+
+	# Find & Replace (dialog will call Replace All, Replace, and/or Find)
 	def on_actionFind_Replace(self,checked):
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 		
@@ -582,8 +597,6 @@ class Controller(QtCore.QObject):
 				#Set a variable indicating the the current selection is the result of a search.
 				current_tab.current_search_selection = search_description_tup
 
-	########################################################################
-
 	# Goto Accepted
 	def on_actionGoto_line_accepted(self):
 
@@ -614,5 +627,16 @@ class Controller(QtCore.QObject):
 			# Open the goto line dialog
 			self.dialogManager.gotoLineDialog.open()
 
-	########################################################################
+					########################################
 
+	# Reformat
+	def on_actionReformat(self):
+		print "Reformat Signalled - Not Implemented In This Version (yet...)"
+
+	#
+	# Help Menu (Handlers)
+	#
+
+	# About
+	def on_actionAbout(self):
+		self.dialogManager.aboutDialog.open()
