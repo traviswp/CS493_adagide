@@ -58,8 +58,11 @@ class FileEditor(Qsci.QsciScintilla):
 
 
 class ProjectFile(FileEditor):
+
 	modificationStateChanged = QtCore.pyqtSignal(QtCore.QObject)
+
 	def __init__(self, filename, file_path, parent_model=None):
+
 		FileEditor.__init__(self)
 		self.parent_model = parent_model
 		self.filename = filename
@@ -71,7 +74,7 @@ class ProjectFile(FileEditor):
 		self.selectionChanged.connect(self.on_selection_changed)
 		self.modificationChanged.connect(self.on_modification_changed)
         
-		#Used to keep track of what search the current selection is a result of.
+		# Used to keep track of what search the current selection is a result of.
 		# None indicates that the current selection is not the result of a search operation.
 		self.current_search_selection = None
     
@@ -123,3 +126,11 @@ class ProjectFile(FileEditor):
 
 	def on_modification_changed(self, value):
 		self.modificationStateChanged.emit(self)
+#		if self.isModified() == True:
+#			self.filename = "*" + self.filename
+#		else:
+#			name = self.filename[1:]
+#			self.filename = name		
+#
+#		print self.filename
+

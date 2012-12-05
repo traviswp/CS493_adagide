@@ -36,28 +36,18 @@ class Controller(QtCore.QObject):
 		self.dialogManager.newFileDialog.accepted.connect(self.on_new_file_accepted)
 		self.dialogManager.saveAsDialog.accepted.connect(self.on_save_As_file_accepted)
 
-		# Connect about dialog button(s) to appropriate handler method(s)
-		#self.dialogManager.aboutDialog.accepted
-
 		# Connect find replace dialog button(s) to there handler method(s)
 		self.dialogManager.findReplaceDialog.close_button.clicked.connect(self.dialogManager.findReplaceDialog.hide)
-		self.dialogManager.findReplaceDialog.replace_all_button.clicked.connect(self.replace_all)
-		self.dialogManager.findReplaceDialog.replace_button.clicked.connect(self.replace)
-		self.dialogManager.findReplaceDialog.find_button.clicked.connect(self.find)
+		self.dialogManager.findReplaceDialog.replace_all_button.clicked.connect(self.on_replace_all_button)
+		self.dialogManager.findReplaceDialog.replace_button.clicked.connect(self.on_replace_button)
+		self.dialogManager.findReplaceDialog.find_button.clicked.connect(self.on_find_button)
 
 		# Connect goto line dialog buttons(s) to appropriate handler method(s)
 		self.dialogManager.gotoLineDialog.accepted.connect(self.on_actionGoto_line_accepted)
 
-
-		######################################################################
-		# HACK: get the current tab which contains the file to delete
-		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		tabWidget.removeTab(1)
-		######################################################################
-
-
-		#overriding standard exit behavior hideous hack?
+		# Overriding standard exit behavior hideous hack?
 		self.mainWindow.closeEvent=self.on_exit
+
 		# Link UI elements to functions
 		for item in self.mainWindow.findChildren(QtGui.QAction): # Menubar action elements
 			try:
@@ -128,6 +118,10 @@ class Controller(QtCore.QObject):
 			self.displayOutput("Error: A program is already running. Press 'Stop' first, and then hit 'Run' again.",
 							"<font color=red>", "</font>")
 		else:
+
+			# TODO: we should check to see if there are even files open - is doesn't make sense
+			#        to try and build if no files are open (i.e. when the program first starts...)
+
 			outputConsole.clear()
 
 			# Find run args
@@ -207,6 +201,7 @@ class Controller(QtCore.QObject):
 		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
 			self.dialogManager.newFileDialog.open()
 		return
+
 	def on_new_file_accepted(self):
 		newFileName = self.dialogManager.newFileDialog.textValue()
 		if newFileName != "" and newFileName != None:
@@ -248,6 +243,7 @@ class Controller(QtCore.QObject):
 		if self.fileManager.projectPath != None and self.fileManager.projectPath != "":
 			self.dialogManager.saveAsDialog.open()
 		return
+
 	def on_save_As_file_accepted(self):
 		newFileName = self.dialogManager.saveAsDialog.textValue()
 		if newFileName != "" and newFileName != None:
@@ -317,6 +313,7 @@ class Controller(QtCore.QObject):
 			self.enableProjectControls()
 			self.setFileControls()
 		return	
+
 	def on_actionDelete_File(self,checked):
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 
@@ -351,7 +348,11 @@ class Controller(QtCore.QObject):
 	def on_exit(self,event):
 		self.on_actionQuit(False)
 		event.ignore()
-		
+
+	# we don't use this...... & it is redundant
+	def on_close_button(self):
+		self.on_actionQuit(False)
+
 	def on_actionQuit(self,checked):
 		reply = QtGui.QMessageBox.question(self.mainWindow, 'Please Confirm',
             "Are you sure to quit?", QtGui.QMessageBox.Yes | 
@@ -379,6 +380,10 @@ class Controller(QtCore.QObject):
 		fname=str(projectFile)+""
 		fname=fname.replace(fpath+'/',"")
 		newEditorPane=ProjectFile(fname,projectFile)
+
+		# Connect `modified` signal for new file to member-helper method
+		newEditorPane.modificationStateChanged.connect(self.on_file_modification_state_changed) ##############################################################
+
 		self.fileManager.add(newEditorPane)
 		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		tabWidget.addTab(newEditorPane, QtCore.QString(newEditorPane.filename))
@@ -441,6 +446,23 @@ class Controller(QtCore.QObject):
 		return
 
 	#
+	# Model Signal Handlers
+	#
+
+	def on_file_modification_state_changed(self, editorPane):
+		"Set whether or not a file tab indicates that the specified file is modified or not."
+
+		# If the modified widget is found, prepend a `*` if file has been modified. 
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget() 		
+
+		if current_tab is not None:
+			if editorPane.modified:
+				tabWidget.setTabText(tabWidget.indexOf(current_tab), QtCore.QString("*" + editorPane.filename))
+			else:
+				tabWidget.setTabText(tabWidget.indexOf(current_tab), QtCore.QString(editorPane.filename))
+
+	#
 	# Edit Menu Features (Handlers)
 	#
 
@@ -499,7 +521,7 @@ class Controller(QtCore.QObject):
 
 
 	# Replace All
-	def replace_all(self):
+	def on_replace_all_button(self):
 
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
 		current_tab = tabWidget.currentWidget() 
@@ -510,16 +532,18 @@ class Controller(QtCore.QObject):
 			search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
 
 			if current_tab.current_search_selection != search_description_tup:
-				self.find()
+				self.on_find_button()
 
 			# tracking variables for replace_all loop
 			start_row, start_col = current_tab.getCursorPosition()
 			wrapped = False
+			expression = str(replace_with)
+			length = len(expression)
 
 			# replace all occurences of search_for with replace_with
 			while current_tab.current_search_selection == search_description_tup:
 
-				# replace the found word
+				# replace the found word *
 				current_tab.replace(replace_with)
 
 				selection_start_row, selection_start_col, selection_end_row, selection_end_col = current_tab.getSelection()
@@ -527,26 +551,27 @@ class Controller(QtCore.QObject):
 				# set the new cursor position
 				current_tab.setCursorPosition(selection_end_row, selection_end_col)
 
-				# find any other matches (if any)
-				self.find()
+				# find any other matches (if any) *
+				self.on_find_button()
 
 				# determine the next location of the cursor
 				next_pos_row, next_pos_col = current_tab.getCursorPosition()
-				if next_pos_row <= start_row and next_pos_col <= start_col:
+
+				if next_pos_row <= start_row:
 					wrapped = True
 
 				# check: has replace_all wrapped around to the beginning of the file?
 				if wrapped:
 
 					# check: replace_all has covered the entire file
-					if next_pos_row >= start_row and next_pos_col >= start_col:
+					if next_pos_row >= start_row and next_pos_col >= start_col - 1:
 						break
 
 			# reset the cursor position
 			current_tab.setCursorPosition(start_row, start_col)
 
 	# Replace
-	def replace(self):
+	def on_replace_button(self):
 		check_states=self.dialogManager.findReplaceDialog.get_check_states()
 		search_for=self.dialogManager.findReplaceDialog.search_for_text.text()
 		replace_with=self.dialogManager.findReplaceDialog.replace_with_text.text()
@@ -561,7 +586,7 @@ class Controller(QtCore.QObject):
 				search_description_tup = (search_for,check_states['match case'],check_states['match entire word'],check_states['wrap around'],check_states['search backward'])
 
 				if current_tab.current_search_selection != search_description_tup:
-					self.find()
+					self.on_find_button()
 
 				if current_tab.current_search_selection == search_description_tup:
 					current_tab.replace(replace_with)
@@ -570,10 +595,10 @@ class Controller(QtCore.QObject):
 
 					current_tab.setCursorPosition(selection_end_row, selection_end_col)
 
-					self.find()
+					self.on_find_button()
 
 	# Find
-	def find(self):
+	def on_find_button(self):
 		check_states=self.dialogManager.findReplaceDialog.get_check_states()
 		search_for=self.dialogManager.findReplaceDialog.search_for_text.text()
 		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
