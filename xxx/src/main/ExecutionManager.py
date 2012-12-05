@@ -51,6 +51,7 @@ class ExecutionManager():
 		self.write("[ Program Started ]")
 
 	def on_finished(self):
+		self.running = False
 		self.write("[ Program Terminated ]")
 
 		# call controller method "compilationOutput" to display buffer contents
@@ -60,8 +61,11 @@ class ExecutionManager():
 		self.write(data)
 
 	def on_error(self):
-		#self.write("An error occurred: %s" % str(self.process.error()))
-		self.write('<font color=red>An error occurred: ' + str(self.process.error()) + '</font>')
+		if(self.running):
+			#self.write("An error occurred: %s" % str(self.process.error()))
+			self.write('<font color=red>An error occurred: ' + str(self.process.error()) + '</font>')
+		else:
+			self.write('<font color=red>' + "Stopping program..." + '</font>')
 
 	#
 	# buffer manipulation

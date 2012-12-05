@@ -11,6 +11,10 @@ from PyQt4 import QtGui
 # import QsciScintilla, QsciLexerCPP
 
 class FileManager:
+
+	# Model Signals
+	fileModifiedStateChanged = QtCore.pyqtSignal(QtCore.QObject)
+
 	def __init__(self):
 		self.projectOpen = False
 		self.projectPath = ""
