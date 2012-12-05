@@ -1,7 +1,6 @@
 ----------
  Michael
 ----------
-3-Themes for .UI   <---- We really need to get this working! I'm having trouble with dialogs because of this I think...
 3-HotKeys
 
 ----------
@@ -41,9 +40,6 @@
     **** works, but still has some funny funcionality ***
 1. figure out how to disable buttons until files are open
 
-1-Help
-1--about(write a help text / program documentation) *** Won't work unless we can get the resources file to load... ***
-
 1-Tab Widget
 1--Scintilla settings (tabs colors etc.)
 1-delete tabs in rational way <<<<------- ealier it sounded like Mike actually be doing this...?
@@ -57,8 +53,11 @@ Finished (probably)
 1--GotoLine (set the current panes cursor to the specified line and centers view) (t.p.)
 1--One initial Tab (containing Welcome/Help text) (t.p.)
 3--* appended to tab names that have been modified
+1-Help
+1--about(write a help text / program documentation) *** Won't work unless we can get the resources file to load... ***
 
 1--One Tab per file (only .h .cpp .cxx .c and .txt files and files with no file extension) (BIG MIKE)
+3-Themes for .UI   <---- We really need to get this working! I'm having trouble with dialogs because of this I think...
 
 1--New Project (creates a folder and sets the context to that folder)
 1--Open Project (opens all the files in a specified folder)(closes any curently open project and its files)
