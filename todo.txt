@@ -39,7 +39,7 @@
 3--Reformat (rewrites the file with consistent white-space)
 
 1-Help
-1--about(write a help text / program documentation)
+1--about(write a help text / program documentation) *** Won't work unless we can get the resources file to load... ***
 
 1-Tab Widget
 1--One initial Tab (containing Welcome/Help text)
