@@ -6,28 +6,6 @@
 ----------
  Kip
 ----------
-
-1-Buttons
-1--Build (calls build)
-1--Run (calls run)
-1--Stop (calls Stop)
-1--Enter (calls somthing)
-1-Action
-1--Build (calls build)
-1--Run (calls run)
-1--Stop (calls Stop)
-
-1-Fields
-1--Run Arguments (no modifications needed (so far))
-1--Output Pane (output from complier and run processes)
-1--Std-in field (pipes text from the field into the run process every time enter is activated)
-
-1-Main Functions
-1-Build(trys to build the currently open tab)(only build files with main / .cpp .cxx .c)(produces executable with name)
-1-Run(runs the executable by the name of the currently open tab, with the contents of the run argument line)
-  (or nothing if no open tab)
-1-Stop(teminates current run process or does nothing)
-1-Enter(pipes text from the field into the run process every time enter is activated)(or nothing if no running program)
 2-HotKeys
 
 ----------
@@ -72,6 +50,28 @@ Finished (probably)
 1--Close Project (closes all the currently open files)(prompts to save)(disabled when there is no open project)
 1--Quit (calls close project then terminates program)
 
+
+1-Buttons
+1--Build (calls build)
+1--Run (calls run)
+1--Stop (calls Stop)
+1--Enter (calls somthing)
+1-Action
+1--Build (calls build)
+1--Run (calls run)
+1--Stop (calls Stop)
+
+1-Fields
+1--Run Arguments (no modifications needed (so far))
+1--Output Pane (output from complier and run processes)
+1--Std-in field (pipes text from the field into the run process every time enter is activated)
+
+1-Main Functions
+1-Build(trys to build the currently open tab)(only build files with main / .cpp .cxx .c)(produces executable with name)
+1-Run(runs the executable by the name of the currently open tab, with the contents of the run argument line)
+  (or nothing if no open tab)
+1-Stop(teminates current run process or does nothing)
+1-Enter(pipes text from the field into the run process every time enter is activated)(or nothing if no running program)
 
 
 
