@@ -1,5 +1,6 @@
 compile:
+	@cd ../../resources; make colorful
+	@cp ../../resources/cs140adagide_qrc.py ./cs140adagide_rc.py
 	@python UI.py
-	@sed -i 's/import cs140adagide_rc/#import cs140adagide_rc/' ./MainWindow.py
 clean:
-	@rm *.pyc
+	@rm *.pyc MainWindow.py cs140adagide_rc.py
