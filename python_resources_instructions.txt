@@ -1,0 +1,5 @@
+get the "virtualenv.py" fil
+
+run "python virtualenv.py PYENV"
+
+run "pip install pyqt4"

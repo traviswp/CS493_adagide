@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Wed Dec  5 02:28:45 2012
+# Created: Fri Dec  7 09:40:13 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -41,16 +41,16 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.setSizePolicy(sizePolicy)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
-        self.welcome = QtGui.QWidget()
-        self.welcome.setObjectName(_fromUtf8("welcome"))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.welcome)
+        self.welcome_tab = QtGui.QWidget()
+        self.welcome_tab.setObjectName(_fromUtf8("welcome_tab"))
+        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.welcome_tab)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.textEdit = QtGui.QTextEdit(self.welcome)
+        self.textEdit = QtGui.QTextEdit(self.welcome_tab)
         self.textEdit.setEnabled(True)
         self.textEdit.setReadOnly(True)
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
         self.horizontalLayout_2.addWidget(self.textEdit)
-        self.tabWidget.addTab(self.welcome, _fromUtf8(""))
+        self.tabWidget.addTab(self.welcome_tab, _fromUtf8(""))
         self.frame = QtGui.QFrame(self.splitter)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -262,6 +262,8 @@ class Ui_MainWindow(object):
         self.actionSave_As.setIcon(icon18)
         self.actionSave_As.setObjectName(_fromUtf8("actionSave_As"))
         self.actionStop = QtGui.QAction(MainWindow)
+        self.actionStop.setEnabled(True)
+        self.actionStop.setIcon(icon8)
         self.actionStop.setObjectName(_fromUtf8("actionStop"))
         self.menuProject.addAction(self.actionNewProject)
         self.menuProject.addAction(self.actionOpen_Project)
@@ -322,7 +324,7 @@ class Ui_MainWindow(object):
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-style:italic;\"><br /></p>\n"
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-style:italic;\"><br /></p>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt;\">To get started on your development,</span><span style=\" font-size:10pt; font-style:italic;\"> </span><span style=\" font-size:10pt; font-weight:600; font-style:italic;\">create a</span><span style=\" font-size:10pt; font-weight:600;\"> </span><span style=\" font-size:10pt; font-weight:600; font-style:italic;\">new project</span><span style=\" font-size:10pt; font-weight:600;\">  </span><span style=\" font-size:10pt;\">or </span><span style=\" font-size:10pt; font-weight:600; font-style:italic;\">open an existing project</span><span style=\" font-size:10pt; font-weight:600;\">  </span><span style=\" font-size:10pt;\">by selecting the </span><span style=\" font-size:10pt; font-weight:600; font-style:italic;\">\'project\'</span><span style=\" font-size:10pt;\">  link in the menu bar. </span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.welcome), QtGui.QApplication.translate("MainWindow", "Welcome to SIDE++", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.welcome_tab), QtGui.QApplication.translate("MainWindow", "Welcome to SIDE++", None, QtGui.QApplication.UnicodeUTF8))
         self.button_build.setText(QtGui.QApplication.translate("MainWindow", "Build", None, QtGui.QApplication.UnicodeUTF8))
         self.button_build.setShortcut(QtGui.QApplication.translate("MainWindow", "F5", None, QtGui.QApplication.UnicodeUTF8))
         self.button_run.setText(QtGui.QApplication.translate("MainWindow", "Run", None, QtGui.QApplication.UnicodeUTF8))
@@ -372,7 +374,7 @@ class Ui_MainWindow(object):
         self.actionStop.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setShortcut(QtGui.QApplication.translate("MainWindow", "F7", None, QtGui.QApplication.UnicodeUTF8))
 
-#import cs140adagide_rc
+import cs140adagide_rc
 
 if __name__ == "__main__":
     import sys
