@@ -385,8 +385,12 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionOpen_File">
+   <property name="icon">
+    <iconset resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/new-file</normaloff>:/icons/theme/new-file</iconset>
+   </property>
    <property name="text">
-    <string>Open File</string>
+    <string>Import File</string>
    </property>
   </action>
   <action name="actionDelete_File">
@@ -411,6 +415,10 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionSave_All">
+   <property name="icon">
+    <iconset resource="../../resources/cs140adagide.qrc">
+     <normaloff>:/icons/theme/save-as</normaloff>:/icons/theme/save-as</iconset>
+   </property>
    <property name="text">
     <string>Save All</string>
    </property>
