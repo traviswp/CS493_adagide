@@ -1,0 +1,261 @@
+================================================================================
+|                                 Lab 3 Key                                    |
+================================================================================
+
+--------------------------------------------------------------------------------
+R1. The if Statement
+--------------------------------------------------------------------------------
+
+    1.  15 or 115
+    2.  5  or 90
+
+--------------------------------------------------------------------------------
+R2. Relations and Relational Operators
+--------------------------------------------------------------------------------
+
+    1.  x > 0
+    2.  x <= 0
+    3.  x >= 8
+    4.  x < 8
+    5.  (x==0 and y==0)
+    
+    6.  name.substr(0,1) == 'h'; 
+    7.  salary >= 75000; 
+    
+    8.  (year >= 21)     or I would accept:      (year <= 1991) 
+    9.  (month == 8)
+    10. (year % 4 == 0)
+
+--------------------------------------------------------------------------------
+P1. Input Validation
+--------------------------------------------------------------------------------
+
+    1. The slope is undefined (cannot divide by zero). 
+    2. 
+        #include <iostream>
+        #include "ccc_shap.cpp"
+        using namespace std;
+        main()
+        {  
+            double slope;
+
+            double xcoord, ycoord;
+            Point p1, p2; 
+
+            cout << "Input x coordinate of the first point" << "\n";
+            cin >> xcoord;
+            cout << "Input y coordinate of the first point" << "\n";
+            cin >> ycoord;
+
+            p1 = Point(xcoord, ycoord);
+
+            cout << "Input x coordinate of the second point" << "\n";
+            cin >> xcoord;
+            cout << "Input y coordinate of the second point" << "\n";
+            cin >> ycoord;
+
+            p2 = Point(xcoord, ycoord);
+
+            slope = (p2.get_y() - p1.get_y()) / (p2.get_x() - p1.get_x() );
+
+            if (p2.get_x() == p1.get_x() )
+            {
+                cout << "Denominator cannot be zero." << "\n";
+            }
+            else
+            {
+                cout << "The slope of the line between points 1 and 2 is " << slope << "\n";
+            }
+
+            return 0;
+        }
+
+    3. The program will print: "Denominator cannot be zero."
+    4. The program will print: "The slope of the line between points 1 and 2 is 1"
+
+--------------------------------------------------------------------------------
+P2. Additional Input Validation Exercise
+--------------------------------------------------------------------------------
+
+    1. The difference between the third and second year salary and second and first is:-nan%
+    2.
+        #include <iostream>
+        using namespace std;
+        int main()
+        { 
+            double fyear_sal, syear_sal,tyear_sal;
+
+            cout << "Input the first year's salary:" << "\n";
+            cin >> fyear_sal;
+            cout <<  "Input the second year's salary:" <<  "\n";
+            cin >> syear_sal;
+            cout << "Input the third year's salary:" << "\n";
+            cin >> tyear_sal;
+
+            if (fyear_sal == syear_sal)
+            {
+                cout << "The first year salary and the second year salary can't be the same." << "\n";
+            }
+            else
+            {
+                cout << "The difference between the third and second year salary and second and first is:";
+                cout << ((tyear_sal-syear_sal)/(syear_sal-fyear_sal))*100 << "%" << "\n";
+            }
+
+            return 0;
+        }
+
+    3. The program will print: "The first year salary and the second year salary can't be the same."
+--------------------------------------------------------------------------------
+P3. The if/else Statement
+--------------------------------------------------------------------------------
+
+    1.
+        #include <iostream>
+        using namespace std;
+        int main()
+        {
+            double kwh, bill;
+
+            cout << "How many Kilowatt Hours were used? ";
+            cin >> kwh;
+
+            if (kwh > 1000)
+            { 
+                bill = (0.45 * kwh);
+            }
+
+            else
+            {
+                bill = (0.60 * kwh);
+            }
+
+            cout << "Your total bill is $" << bill << "\n";
+
+            return 0;
+        }
+
+    2.  $540
+    3.  $789.3
+    4.  $4500 
+
+--------------------------------------------------------------------------------
+P4. Simple Loops
+--------------------------------------------------------------------------------
+
+    1. 
+        #include <iostream>
+        using namespace std;
+
+        int main()
+        {
+            double input;
+
+            cout << "Input an integer: ";
+            cin >> input;
+
+            int d = 0;
+            double temp = input;
+
+            while (temp > 0.0001)
+            {
+                temp = temp / 2;
+                d++;
+            }
+
+            cout << input << " will be divided by two " << d << " time(s) to get within 0.0001 of zero" << "\n";   
+        }
+
+--------------------------------------------------------------------------------
+P5. Loop Termination 
+--------------------------------------------------------------------------------
+
+    1.  nyear = 2000
+    2.
+        #include <iostream>
+        using namespace std; 
+
+        int main()
+        {  
+            int nyear;
+            int years = 0; 
+            const int millennium = 2000;
+
+            cout << "Please enter the current year: ";
+            cin >> nyear;
+
+            while (nyear != millennium)
+            {
+                if (nyear > millennium)
+                {
+                    nyear--;
+                    years--;
+                }
+                else
+                {
+                    nyear++;
+                    years++; 
+                }
+            }
+
+            if (years > 0)
+            {
+                cout << "Another "<< years << " years to the millenium." << "\n";
+            }
+            else if (years < 0)
+            {
+                cout << "The millenium was " << (-1) * years << " years ago." << "\n";
+            }
+            else
+            {
+                cout << "Happy Millenium!" << "\n";
+            }
+
+            return 0;
+        }
+
+--------------------------------------------------------------------------------
+P6. Processing a Sequence of Inputs 
+--------------------------------------------------------------------------------
+
+    1.
+        #include <iostream>
+        using namespace std;
+
+        int main()
+        { 
+            double kwh = 0.0;
+            double bill = 0.0;
+
+            while (kwh != -1)
+            {
+                cout << "How many Kilowatt Hours were used this month?: ";
+                cin >> kwh;
+
+                if (kwh > 1000)
+                {
+                    bill += (0.45 * kwh);
+                }
+                else if ((kwh >= 0) && (kwh <= 1000))
+                {
+                    bill += (0.60 * kwh);
+                }
+                else if ((kwh != -1) && (kwh < 0))
+                {
+                    cout << "I'm sorry, you must enter a positive number for Kilowatt Hours usage.\n"; 
+                }
+            }
+
+            cout << "Your total bill is $" << bill << "\n";
+
+            return 0;
+        }
+
+--------------------------------------------------------------------------------
+R3. Using Boolean Variables 
+--------------------------------------------------------------------------------
+
+    1.  PURPLE
+    2.  YELLOW
+    3.  RED
+

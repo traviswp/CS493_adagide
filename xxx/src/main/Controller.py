@@ -68,7 +68,7 @@ class Controller(QtCore.QObject):
 			except AttributeError:
 				if(debugMode):
 					print "Controller should have a member function called '%s', but doesn't!" %("on_"+itemName)
-		
+
 		inputTextBox = self.mainWindow.findChild(QtGui.QLineEdit, 'stdinTextBox');
 		inputTextBox.returnPressed.connect(self.enter);
 		self.disableProjectControls()
@@ -83,34 +83,39 @@ class Controller(QtCore.QObject):
 			self.displayOutput("Error: A program is currently running. Press 'Stop' first, and then hit 'Build' again.",
 							"<font color=red>", "</font>")
 		else:
-			outputConsole.clear()
 
-			# get the current tab which contains the file to be built
-			tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-			currFile = tabWidget.currentWidget()
-
-			# get the file(s) to be built
-			files = currFile.file_path
-
-			# set the name of the executable
-			filename = currFile.filename
-			length = len(filename)
-			if (filename[length-4:length] == ".cpp"):
-				executableName = filename[0:length-4]
-			else:
-				# This should never happen if you are trying to build a valid file...
-				# If we get here it means that people are trying to compile non-.cpp
-				# files...
-				executableName = "SIDE.err"
+			if self.fileManager.projectOpen:
+				if self.fileManager.count > 0:
 
 
-			# TODO get the compilation arguments 
-			compileArgs = ""
+					outputConsole.clear()
 
-			# build with parameters defined above
-			self.buildManager.build((files,), executableName, compileArgs)
+					# get the current tab which contains the file to be built
+					tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+					currFile = tabWidget.currentWidget()
 
-		return
+					# get the file(s) to be built
+					files = currFile.file_path
+
+					# set the name of the executable
+					filename = currFile.filename
+					length = len(filename)
+					if (filename[length-4:length] == ".cpp"):
+						executableName = filename[0:length-4]
+					else:
+						# This should never happen if you are trying to build a valid file...
+						# If we get here it means that people are trying to compile non-.cpp
+						# files...
+						executableName = "SIDE.err"
+
+
+					# TODO get the compilation arguments 
+					compileArgs = ""
+
+					# build with parameters defined above
+					self.buildManager.build((files,), executableName, compileArgs)
+
+				return
 
 	def run(self):
 		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
@@ -119,25 +124,27 @@ class Controller(QtCore.QObject):
 							"<font color=red>", "</font>")
 		else:
 
-			# TODO: we should check to see if there are even files open - is doesn't make sense
-			#        to try and build if no files are open (i.e. when the program first starts...)
+			if self.fileManager.projectOpen:
+				if self.fileManager.count > 0:
 
-			outputConsole.clear()
+					outputConsole.clear()
 
-			# Find run args
-			runArgsLine = self.mainWindow.findChild(QtGui.QLineEdit, 'runArgs')
-			runArgs = runArgsLine.text()
-			runArgsLine.clear()
+					# Find run args
+					runArgsLine = self.mainWindow.findChild(QtGui.QLineEdit, 'runArgs')
+					runArgs = runArgsLine.text()
+					runArgsLine.clear()
 			
-			# Run executable
-			tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-			currFile = tabWidget.currentWidget()
-			filedir = os.path.dirname(str(currFile.file_path))
-			executableName = str(currFile.file_path) + ""
-			executableName = executableName.replace(filedir + '/', "")
-			executableName = executableName.split('.')[0]
-			self.executionManager.run(filedir, "./" + executableName, str(runArgs))
-		return
+					# Run executable
+					tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+					currFile = tabWidget.currentWidget()
+					filedir = os.path.dirname(str(currFile.file_path))
+					executableName = str(currFile.file_path) + ""
+					executableName = executableName.replace(filedir + '/', "")
+					executableName = executableName.split('.')[0]
+					self.executionManager.run(filedir, "./" + executableName, str(runArgs))
+
+					return
+
 
 	def stop(self):
 		self.executionManager.stop()
@@ -299,9 +306,14 @@ class Controller(QtCore.QObject):
 		return		
 		
 	def on_actionOpen_Project(self,checked):
-		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
-		tabWidget.clear()
+
+		# clear welcome tab
+#		tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+
+		# (check close project)
 		self.on_actionClose_Project(checked)
+#		tabWidget.clear()
+
 		dirPath = str(QtGui.QFileDialog.getExistingDirectory(parent = self.mainWindow, caption='Open An Existing Project', directory='./'))
 		if(dirPath != ""):
 			self.fileManager.set(str(dirPath))
@@ -319,29 +331,56 @@ class Controller(QtCore.QObject):
 		current_tab = tabWidget.currentWidget() 
 		if current_tab != 0:
 			index = tabWidget.indexOf(current_tab)
+			print index
 			reply = QtGui.QMessageBox.warning(self.mainWindow, 'Delete this File?',
-				"Are you sure you want to delete "+current_tab.filename, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+				"Are you sure you want to delete " + current_tab.filename, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 			if reply == QtGui.QMessageBox.Yes:
+
+				# get file name
 				file=current_tab.filename
+				print file
+
+				# remove the tab
 				tabWidget.removeTab(index)
-				current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=current_tab.filename+'.bak')
+
+				current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=current_tab.filename+'.bak')  #THIS IS BAD
 				current_tab.close();
-				self.fileManager.remove(current_tab)
+				self.fileManager.remove(tabWidget.currentWidget() )
 				os.remove(str(current_tab.file_path))
+				print str(current_tab.file_path)
+
 				#deletion successful
-				self.displayOutput('#File, '+ file+', was deleted succesfully.','<font color="green">','</font>')
+				self.displayOutput('#File, '+ file +', was deleted succesfully.','<font color="green">','</font>')
 				self.setFileControls()
 		pass		
 	
 	def on_actionClose_Project(self,checked):
+
+		# clear output console
+		outputConsole = self.mainWindow.findChild(QtGui.QTextEdit, 'outputTextBox')
+		outputConsole.clear()
+
 		#stop any running process
 		self.stop()
+
 		#close each open file
 		for projectFile in self.fileManager.files:
 			self.closeFile(projectFile)
+
 		#reset the fleManager
 		self.fileManager.reset()
 		self.disableProjectControls()
+
+		# re-display the welcome tab
+		tabWidget = self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		tab = self.mainWindow.findChild(QtGui.QWidget, 'welcome_tab')
+
+		index = tabWidget.indexOf(tab)
+		if index >= 0:
+			tabWidget.removeTab(index)
+		else:
+			tabWidget.addTab(tab, QtCore.QString("Welcome to SIDE++"))		
+
 		return		
 		
 	#this is called when a user press the 'X' button to quit
@@ -401,7 +440,10 @@ class Controller(QtCore.QObject):
 		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
 		Widget.setEnabled(False)
 		self.setFileControls()
+		self.setEditMenuControls()
+		self.setActionMenuControls()
 		return
+
 	def enableProjectControls(self):
 		Widget=self.mainWindow.findChild(QtGui.QAction,'actionNew_File')
 		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
@@ -413,6 +455,8 @@ class Controller(QtCore.QObject):
 		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
 		Widget.setEnabled(True)
 		self.setFileControls()
+		self.setEditMenuControls()
+		self.setActionMenuControls()
 		return
 		
 	def setFileControls(self):
@@ -444,6 +488,125 @@ class Controller(QtCore.QObject):
 		Widget.setFont(QtGui.QFont("Ariel",10,5,False))
 		Widget.setEnabled(False)
 		return
+
+    # Edit Menu Controls
+	def setEditMenuControls(self):
+		if self.fileManager.projectOpen:
+			if self.fileManager.count > 0:
+
+				# undo
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionUndo')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# redo
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionRedo')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# redo
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionCut')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# cut
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionCopy')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# copy
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionPaste')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# paste
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionSelect_All')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# select all
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionFind_Replace')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# replace
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionGoto')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# reformat
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionReformat')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(False)
+
+				return
+
+		# undo
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionUndo')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# redo
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionRedo')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# redo
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionCut')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# cut
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionCopy')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# copy
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionPaste')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# paste
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionSelect_All')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# select all
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionFind_Replace')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# replace
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionGoto')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# reformat
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionReformat')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+
+		return
+
+	# Action Menu Controls
+	def setActionMenuControls(self):
+		if self.fileManager.projectOpen:
+			if self.fileManager.count > 0:
+
+				# build
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionBuild')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# run
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionRun')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+				# stop
+				Widget=self.mainWindow.findChild(QtGui.QAction,'actionStop')
+				Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+				Widget.setEnabled(True)
+
+				return
+
+		# build
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionBuild')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# run
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionRun')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+		# stop
+		Widget=self.mainWindow.findChild(QtGui.QAction,'actionStop')
+		Widget.setFont(QtGui.QFont("Ariel",10,50,False))
+		Widget.setEnabled(False)
+
+		return
+
 
 	#
 	# Model Signal Handlers
