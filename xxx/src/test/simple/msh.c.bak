@@ -1,0 +1,223 @@
+/*	$Id: msh.c,v 1.59 2012/06/01 06:09:12 mcallim2 Exp $	*/
+/* CS 352 -- Mini Shell!  
+ *
+ *   Sept 21, 2000,  Phil Nelson
+ *   Modified April 8, 2001 
+ *   Modified January 6, 2003
+ *
+ *   Modifications for CS352 Begun March 31, 2012
+ *   Modifications for CS352 made by Michael McAllister
+ *   Last Modfied 5/31/12
+ *   Current Version: Assignment 6
+ *
+ */
+
+#include <signal.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include "proto.h"
+
+/* Constants */ 
+
+
+
+/* Global Variables*/
+int sig_event;
+int main_argc;
+int shift;
+int exit_status;
+char **main_argv;
+int script;
+FILE* in_ptr;
+int in_expr;
+
+/*handlers*/
+void got_sigint(int sig){
+	sig_event = 1;
+}
+
+/* Shell main */
+
+int main(int argc, char** argv) {
+
+  char  buffer [LINELEN];
+  char  out_buff [BUFFOUT];
+  int len;
+  FILE  *fptr_in;
+
+  sig_event = 0;   
+  main_argv = argv;
+  main_argc = argc;
+  shift = 0;
+    
+  if(main_argc > 1){
+    script=1;
+    fptr_in = fopen(main_argv[1],"r");
+    if(fptr_in == 0){
+      exit(127);
+    }
+  }else{
+    script=0;
+    fptr_in = stdin;  
+  }
+	in_ptr=fptr_in;
+
+  while (1) {
+  /* prompt and get line */
+    if(fptr_in == stdin){
+      if(getenv("P1") == 0){
+        fprintf (stderr, "%% ");
+      }else{
+        fprintf (stderr, "%s",getenv("P1"));
+      }
+    }
+		signal(SIGINT, got_sigint);
+		sig_event=0;
+
+		memset(buffer,0,LINELEN);
+    if (fgets (buffer, LINELEN, fptr_in) != buffer){
+      break;
+    }
+		
+    /* Get rid of \n at end of buffer. */
+    len = strlen(buffer);
+    if (buffer[len-1] == '\n'){
+      buffer[len-1] = 0;
+    }
+    /* Run it ... */
+		in_expr=0;
+    memset(out_buff,0,BUFFOUT);
+    processline (buffer,out_buff,fileno(fptr_in),
+      STDOUT_FILENO,STDERR_FILENO,0, 1);
+    }
+  if(fptr_in != stdin){
+    if(feof(fptr_in)){
+      fclose(fptr_in); 
+      exit(0);
+    }
+  }else if (!feof(stdin)){
+    perror ("read");
+  }
+  return 0;		/* Also known as exit (0); */
+}
+
+
+int processline (char *orig_line,char *out_line, int readfd, 
+  int writefd, int errfd,int no_expand, int progenitor){
+    
+  pid_t   cpid;
+  int     status;
+  int     temp;
+  int		  err_status;/*records the last error encountered*/
+  int     argc;     /*number of args in line*/
+  char**  argv;     /*pointers to the args in line*/
+
+  /*0=no err, -1=odd "s, -2=odd paren's, -5 buff overflow*/
+  err_status = 0;
+  /*remove comments*/
+  uncomment(orig_line);
+	/*if there are statements let statements.c deal with them*/
+  if(statements(orig_line,readfd,writefd,errfd) == 0){ 
+     
+    /* Expand the line */
+    if (no_expand) {
+      temp=strlen(out_line);
+    }else{
+      temp=expand(orig_line, out_line, BUFFOUT, progenitor);
+    }
+    /*pipe line identification*/
+    if(pipe_line(out_line,readfd,writefd,errfd) == 0){
+      if(redirect(out_line,readfd,writefd,errfd) == 0){
+        if(temp < 0){
+          err_status = temp;
+        }else{  
+          /* Break the line up into strings with arg_parse*/
+        argc = arg_parse(out_line, &argv);
+          if(argc < 0){
+          err_status = argc;
+          }
+        }
+          
+        if(err_status < 0){
+        /* no malloc is performed in this case*/
+          switch(err_status){
+            case -1:
+              fprintf(stderr,"ERROR: Odd number of \"\n");   
+              break;
+            case -2:
+              fprintf(stderr,"ERROR: no ending bracket\n");
+              break;
+            case -3:
+              fprintf(stderr,"ERROR: unexpected \\\n");
+              break;
+            case -4:
+              fprintf(stderr,"ERROR: poorly parenthesised \\\n");
+              break;
+            case -5: 
+              fprintf(stderr,"ERROR: line is longer than buffer size\n");
+              break;
+            case -6: 
+              fprintf(stderr,"ERROR: pipe failure\n");
+              break;
+            case -7: 
+              fprintf(stderr,"ERROR: file for redirection not specified\n");
+              break;
+            default:
+              fprintf(stderr,"ERROR: Undetermined Error\n");
+              break;
+          }
+        } else if (argc > 0 ){
+        /*if its not a built in command fork a new process*/
+          if( built_in(argv, argc,readfd, writefd, errfd) < 0 ){       
+      
+            /* Start a new process to do the job. */
+            cpid = fork();
+            if (cpid < 0) {
+              perror ("fork");
+              return 0;
+            }      
+            /* Check for who we are! */
+            if (cpid == 0) {
+            /* We are the child! */
+              /*if we are not the progenitor*/
+              if(!progenitor){
+                dup2(readfd,STDIN_FILENO);
+                dup2(writefd,STDOUT_FILENO);
+                dup2(errfd,STDERR_FILENO);
+              }
+              execvp(argv[0],argv);
+              perror ("exec");
+              exit(127);
+            }
+            if(progenitor){
+              /* Have the parent wait for child to complete */
+              if (waitpid(cpid,&status,0) < 0){
+                perror ("wait");
+              }
+              if(WIFEXITED(status)){
+                exit_status=WEXITSTATUS(status);
+              }else{
+                exit_status=127;
+              }
+            }else{
+              free(argv);
+              return cpid;       
+            }
+          }
+          /*free the memory allocated in arg_parse*/
+          free(argv);
+        }
+      }
+    }
+  }
+  return 0;
+}
+    
+

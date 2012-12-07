@@ -1,0 +1,119 @@
+/*	$Id: pipe_line.c,v 1.5 2012/06/01 06:07:34 mcallim2 Exp $	*/
+/*
+ *   Modifications for CS352 Begun March 31, 2012
+ *   Modifications for CS352 made by Michael McAllister
+ *   Last Modfied 5/31/12
+ *   Current Version: Assignment 6
+ *
+ */
+#include <stdlib.h>
+#include <string.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/wait.h>
+#include <stdio.h>
+
+#include "proto.h"
+
+int pipe_line(char *line,int infd, int outfd, int errfd){
+    extern int exit_status;
+
+    int read_index;     /**/
+    int cmd_start;
+    int len;            /*actual length of line*/
+    int in_quote;       /*bool, answers "Am I in a quote?"*/
+    int pipec;          /*the number of pipes*/
+    int fd[2];         
+    int in_fd;
+    int status;
+		int this_pid;
+		int last_pid;
+    len=strlen(line);
+    
+    read_index = 0;
+    in_quote = 0;
+    pipec =0;
+    while (read_index < len) {
+        if(line[read_index] == '"'){
+          in_quote=!in_quote;
+        }else if((line[read_index] == '|') && (!in_quote)){
+          pipec=pipec+1;
+        }
+        read_index=read_index+1;
+    }
+    if(pipec == 0){
+      return 0;
+    }
+    
+    read_index = 0;
+    in_quote = 0;
+    cmd_start =0;
+    in_fd=infd;
+		this_pid=0;
+		last_pid=0;
+    
+    while (read_index < len) {
+      if(line[read_index] == '"'){
+        in_quote=!in_quote;
+      }else if((line[read_index] == '|') && (!in_quote)){
+        line[read_index] = 0;
+        /*-------------iterative pipe line stuff-------------*/ 
+        if(pipe(fd)<0){
+          return -6;
+        } else {
+          this_pid=processline(line,&line[cmd_start],
+            in_fd,fd[1],errfd,1,0);
+          close(fd[1]);
+          if(last_pid){
+            if (waitpid(last_pid,&status,0) < 0){
+              perror ("wait");
+            }
+            if(WIFEXITED(status)){
+              exit_status=WEXITSTATUS(status);
+            }else{
+               exit_status=127;
+            }
+          }
+          if(in_fd != infd){
+            close(in_fd);
+          }
+          in_fd=fd[0]; 
+					last_pid=this_pid;
+        }
+        /*-------------iterative pipe line stuff-------------*/           
+        cmd_start=read_index+1;
+      }
+      read_index=read_index+1;
+    }
+    this_pid=processline(line,&line[cmd_start],
+      in_fd,outfd,errfd,1,0);
+	  /*signal(SIGINT, got_sigint_expand);*/
+    if(last_pid){
+      if (waitpid(last_pid,&status,0) < 0){
+        perror ("wait");
+      }
+      if(WIFEXITED(status)){
+        exit_status=WEXITSTATUS(status);
+      }else{
+        exit_status=127;
+      }
+    }
+    if(this_pid){
+      if (waitpid(this_pid,&status,0) < 0){
+        perror ("wait");
+      }
+      if(WIFEXITED(status)){
+        exit_status=WEXITSTATUS(status);
+      }else{
+        exit_status=127;
+      }
+    }
+    if(in_fd != infd){
+      close(in_fd);
+    }   
+       
+  return pipec;
+}

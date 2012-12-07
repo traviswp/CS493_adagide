@@ -123,6 +123,7 @@ class ProjectFile(FileEditor):
 
         self.filehandle.close()
         self.filehandle=QtCore.QFile(newDirectory+'/'+newName)
+        self.file_path =QtCore.QString(newDirectory+'/'+newName)
         self.filehandle.open(QtCore.QIODevice.ReadWrite)
         self.filehandle.seek(0)
         self.filehandle.resize(0)

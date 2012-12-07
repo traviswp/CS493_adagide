@@ -186,10 +186,22 @@ class Controller(QtCore.QObject):
 		return
 
 	def on_actionBuild(self,checked):
+                tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget()
+		if current_tab.isModified() == True:
+                        reply = QtGui.QMessageBox.warning(self.mainWindow, 'Build Modified File?',"This file has been modified \n Would you like to save before building? " + current_tab.filename, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+			if reply == QtGui.QMessageBox.Yes:
+                                current_tab.save()        
 		self.build();
 		return
 	
 	def on_button_build(self,checked):
+                tabWidget=self.mainWindow.findChild(QtGui.QTabWidget,'tabWidget')
+		current_tab = tabWidget.currentWidget()
+		if current_tab.isModified() == True:
+                        reply = QtGui.QMessageBox.warning(self.mainWindow, 'Build Modified File?',"This file has been modified \n Would you like to save before building? " + current_tab.filename, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+			if reply == QtGui.QMessageBox.Yes:
+                                current_tab.save()    
 		self.build();
 		return
 	
@@ -331,23 +343,23 @@ class Controller(QtCore.QObject):
 		current_tab = tabWidget.currentWidget() 
 		if current_tab != 0:
 			index = tabWidget.indexOf(current_tab)
-			print index
 			reply = QtGui.QMessageBox.warning(self.mainWindow, 'Delete this File?',
 				"Are you sure you want to delete " + current_tab.filename, QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 			if reply == QtGui.QMessageBox.Yes:
 
 				# get file name
 				file=current_tab.filename
-				print file
-
+				deletefile=current_tab.file_path
 				# remove the tab
+				current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=current_tab.filename+'.bak')  #THIS IS BAD
+				current_tab.close()
+				self.fileManager.remove(current_tab)
+				
+				os.remove(str(deletefile))
+				print str(current_tab.file_path)
+				print str(deletefile)
 				tabWidget.removeTab(index)
 
-				current_tab.setFile(newDirectory=self.fileManager.projectPath,newName=current_tab.filename+'.bak')  #THIS IS BAD
-				current_tab.close();
-				self.fileManager.remove(tabWidget.currentWidget() )
-				os.remove(str(current_tab.file_path))
-				print str(current_tab.file_path)
 
 				#deletion successful
 				self.displayOutput('#File, '+ file +', was deleted succesfully.','<font color="green">','</font>')
