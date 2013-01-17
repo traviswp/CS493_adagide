@@ -2,7 +2,10 @@
 
 The Simple Integrated Development Environemnt for C++ (SIDE++) was a project that was picked up by 
 Travis Peters, Michael McAallister, and Christopher Proteau in CSCI 493: Software Implementation 
-in the Fall of 2012 at Western Washington University.
+in the Fall of 2012 at Western Washington University (WWU).
+
+The original project belongs to the department of Computer Science at WWU, but this forked repository will consist
+of my personal development to tighten up the project.
 
 The project is not entirely complete but is currently a functional and useful tool for introductory students
 that are trying to learn the C++ programming language. The intention of the project was to create a 
