@@ -1,4 +1,4 @@
-##SIDE++
+# SIDE++
 
 The Simple Integrated Development Environemnt for C++ (SIDE++) was a project that was picked up by 
 Travis Peters, Michael McAallister, and Christopher Proteau in CSCI 493: Software Implementation 
@@ -12,5 +12,3 @@ that are trying to learn the C++ programming language. The intention of the proj
 development environment for introductory programming students so that they could focus on learning the intricicies
 of the language, rather than getting hung-up in more complex development enviornments like Visual Studio, but still
 providing helpful tools such as project management guidance, basic text editor features, syntax hilighting, etc...
-
-##Features:
